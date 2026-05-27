@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ – PCH Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
+<style>
+.content-page { max-width: 860px; margin: 0 auto; padding: 56px 24px 80px; }
+.content-page h1 { font-family: var(--font-cond); font-size: 40px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+.content-page h1 span { color: var(--red); }
+.last-updated { font-size: 13px; color: var(--text-light); margin-bottom: 36px; }
+.content-page h2 { font-family: var(--font-cond); font-size: 22px; font-weight: 800; text-transform: uppercase; color: var(--navy); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--gray-mid); }
+.content-page p { font-size: 15px; color: var(--text-mid); line-height: 1.8; margin-bottom: 16px; }
+.content-page ul { padding-left: 20px; margin-bottom: 16px; }
+.content-page li { font-size: 15px; color: var(--text-mid); line-height: 1.75; margin-bottom: 6px; }
+.content-page a { color: var(--red); text-decoration: underline; }
+.info-box { background: var(--gray-light); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.info-box p { margin: 0; font-weight: 600; color: var(--text); }
+/* FAQ accordion */
+.faq-item { border: 1px solid var(--gray-mid); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.faq-q { padding: 18px 20px; font-size: 15px; font-weight: 700; color: var(--navy); cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--white); transition: background .15s; }
+.faq-q:hover { background: var(--gray-light); }
+.faq-q .faq-arrow { font-size: 18px; transition: transform .2s; color: var(--red); }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 20px 18px; font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+/* Contact form */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.contact-form .field { margin-bottom: 16px; }
+.contact-form label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-mid); margin-bottom: 5px; }
+.contact-form input, .contact-form select, .contact-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-mid); border-radius: 8px; font-size: 15px; font-family: var(--font); outline: none; transition: border-color .2s; }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--red); }
+.contact-form textarea { resize: vertical; min-height: 120px; }
+.btn-submit { background: var(--red); color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer; font-family: var(--font); transition: background .2s, transform .15s; }
+.btn-submit:hover { background: var(--red-dark); transform: translateY(-1px); }
+.contact-info-card { background: var(--navy); border-radius: 14px; padding: 28px; color: #fff; }
+.contact-info-card h3 { font-family: var(--font-cond); font-size: 22px; font-weight: 900; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.ci-row { display: flex; gap: 12px; margin-bottom: 18px; align-items: flex-start; }
+.ci-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.ci-text h4 { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+.ci-text p { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.55; }
+@media(max-width:700px){ .contact-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col"><h4>Branded Merch</h4><a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Products</h4><a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <a href="shop.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></a>
+      <a href="login.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge">0</span></a>
+    </div>
+  </div>
+</header>
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>FAQ</span></div></div>
+<div class="page-hero"><h1>Frequently Asked <span>Questions</span></h1><p>Everything you need to know about PCH Shopping, giveaways, and winning.</p></div>
+<div class="content-page">
+
+<h2>General</h2>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is PCH Shopping? <span class="faq-arrow">▾</span></div><div class="faq-a">PCH Shopping is an online shopping platform where every dollar you spend earns sweepstakes entries into exclusive prize giveaways — including cash, cars, and our $1,000,000 SuperPrize. Shop products you love and enter to win life-changing prizes at the same time.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I have to buy something to enter? <span class="faq-arrow">▾</span></div><div class="faq-a">No! No purchase is necessary to enter or win. You can enter any giveaway for free by mail. See the Official Rules for each giveaway for free entry instructions. A purchase does not improve your odds of winning.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Who is eligible to enter? <span class="faq-arrow">▾</span></div><div class="faq-a">Giveaways are open to legal residents of the United States who are 21 years of age or older at the time of entry and physically located within the United States. See the Official Rules for each giveaway for complete eligibility requirements.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Are the giveaways real? <span class="faq-arrow">▾</span></div><div class="faq-a">Absolutely. PCH has awarded over $492 million in prizes to real people across America. Every giveaway has official rules, real winners, and verified prize fulfillment. Check out our Winners Circle to see real recent winners.</div></div>
+
+<h2>Entries &amp; Winning</h2>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I earn sweepstakes entries? <span class="faq-arrow">▾</span></div><div class="faq-a">Every $1 you spend at PCH Shopping earns 1 automatic entry into all active giveaways. Memberships give you up to 20,000 automatic entries per month. You can also buy Reward Packs for one-time entry boosts, and spin our daily Spin &amp; Win wheel for bonus prizes.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How does the Spin &amp; Win wheel work? <span class="faq-arrow">▾</span></div><div class="faq-a">Every day you get one free spin on our Spin &amp; Win prize wheel. Every spin wins$200,000 or more — guaranteed! Prizes range from$200,000 all the way up to $1,000,000. Just click the wheel on the homepage to spin.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What are my odds of winning? <span class="faq-arrow">▾</span></div><div class="faq-a">Odds depend on the total number of eligible entries received for each giveaway. All eligible entries have an equal chance of winning. Members with more auto-entries have proportionally more entries, but no one can guarantee a win. See the Official Rules for each giveaway for complete odds disclosures.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How will I be notified if I win? <span class="faq-arrow">▾</span></div><div class="faq-a">Winners are notified by email, phone, and/or mail using the contact information provided at registration. For major prizes, the PCH Prize Patrol may visit you in person! Make sure your contact information is current in your account settings.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I choose cash instead of a vehicle prize? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes! For vehicle and other major prize giveaways, winners are typically offered a cash alternative option. The specific cash alternative amount is listed on each giveaway's page and in the Official Rules.</div></div>
+
+<h2>Memberships</h2>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What membership plans are available? <span class="faq-arrow">▾</span></div><div class="faq-a">We offer three monthly membership tiers: Gold ($25/month — 2,000 auto entries), Platinum ($60/month — 6,000 auto entries), and Diamond ($150/month — 20,000 auto entries). All include entry multipliers, merch discounts, and PCH CashBack access.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel my membership? <span class="faq-arrow">▾</span></div><div class="faq-a">Yes, you can cancel your membership at any time. Cancellation takes effect at the end of your current billing period — you keep all benefits through the end of the period you've already paid for. No partial refunds are issued.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is PCH CashBack? <span class="faq-arrow">▾</span></div><div class="faq-a">PCH CashBack is our rewards platform where you can earn cash back on eligible purchases and online activities. All registered PCH Shopping users and members have access to the CashBack platform.</div></div>
+
+<h2>Orders &amp; Shipping</h2>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long does shipping take? <span class="faq-arrow">▾</span></div><div class="faq-a">Standard shipping typically takes 5–10 business days. Expedited shipping options are available at checkout. Orders are processed within 1–2 business days. See our Shipping Policy for full details.</div></div>
+<div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is your return policy? <span class="faq-arrow">▾</span></div><div class="faq-a">We offer a 30-day return policy on most items. Items must be unused, in original packaging, and returned within 30 days of delivery. See our Refund Policy for complete details and any category-specific exceptions.</div></div>
+
+</div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/><p>PCH Shopping — shop great products and enter for a chance to win life-changing prizes.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a></div>
+      <div class="footer-col"><h4>More Info</h4><a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div>
+    </div>
+    <div class="footer-legal"><h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4><p>Open to US residents 21+. See <a href="official-rules.html">Official Rules</a> for full details.</p></div>
+    <div class="footer-bottom"><p>© 2026 PCH Shopping. All rights reserved.</p><div class="footer-policy-links"><a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a><a href="contact.html">Contact</a></div></div>
+  </div>
+</footer><script>function toggleFaq(el){var item=el.parentElement;item.classList.toggle("open");}document.getElementById&&(document.querySelector(".cart-badge").textContent=JSON.parse(localStorage.getItem("pch_cart")||"[]").length);</script></body></html>

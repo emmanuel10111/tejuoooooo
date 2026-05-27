@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop All Products – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .shop-layout { display: flex; gap: 32px; max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+
+    /* Sidebar filters */
+    .filters-sidebar { width: 240px; flex-shrink: 0; }
+    .filter-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .filter-card h3 { font-family: var(--font-cond); font-size: 18px; font-weight: 800; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--gray-mid); }
+    .filter-option { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; }
+    .filter-option input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; }
+    .filter-option label { font-size: 14px; color: var(--text-mid); cursor: pointer; font-weight: 500; flex: 1; }
+    .filter-option .count { font-size: 12px; color: var(--text-light); }
+    .price-range { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+    .price-range input { width: 80px; padding: 8px 10px; border: 1px solid var(--gray-mid); border-radius: 4px; font-size: 13px; font-family: var(--font); }
+    .btn-apply-filter { width: 100%; background: var(--navy); color: var(--white); font-weight: 700; font-size: 13px; padding: 10px; border-radius: 4px; border: none; cursor: pointer; margin-top: 12px; transition: background 0.2s; }
+    .btn-apply-filter:hover { background: var(--red); }
+
+    /* Products area */
+    .products-area { flex: 1; min-width: 0; }
+    .shop-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .results-count { font-size: 15px; color: var(--text-light); font-weight: 500; }
+    .results-count strong { color: var(--text); }
+    .sort-select { padding: 9px 16px; border: 1px solid var(--gray-mid); border-radius: 6px; font-size: 14px; font-family: var(--font); color: var(--text); background: var(--white); cursor: pointer; }
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn { padding: 8px 10px; border: 1px solid var(--gray-mid); border-radius: 4px; background: var(--white); cursor: pointer; color: var(--text-light); font-size: 16px; transition: all 0.15s; }
+    .view-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+    /* Grid */
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .product-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; position: relative; }
+    .product-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); transform: translateY(-4px); }
+    .product-img-wrap { position: relative; overflow: hidden; aspect-ratio: 1/1; background: var(--gray-light); }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+    .badge-soldout { position: absolute; top: 12px; left: 12px; background: var(--text); color: var(--white); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+    .badge-new { position: absolute; top: 12px; left: 12px; background: var(--red); color: var(--white); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 3px; }
+    .entry-badge { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,33,71,0.85); color: var(--gold); font-size: 11px; font-weight: 700; text-align: center; padding: 6px; letter-spacing: 0.04em; }
+    .product-info { padding: 14px 16px 16px; }
+    .product-category { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 4px; }
+    .product-info h3 { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 8px; min-height: 38px; }
+    .product-price { font-size: 18px; font-weight: 800; color: var(--red); margin-bottom: 12px; }
+    .btn-view-product { display: block; width: 100%; background: var(--navy); color: var(--white); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 11px; border-radius: 4px; text-align: center; transition: background 0.18s; }
+    .btn-view-product:hover { background: var(--red); }
+
+    /* Entry banner */
+    .entry-banner { background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%); color: var(--white); text-align: center; padding: 14px 24px; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; }
+    .entry-banner .star { color: var(--gold); }
+
+    /* Pagination */
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 48px; }
+    .page-btn { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--gray-mid); background: var(--white); font-size: 14px; font-weight: 600; color: var(--text-mid); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+    .page-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .page-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .page-btn.dots { border: none; background: none; cursor: default; }
+
+    @media (max-width: 1024px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .filters-sidebar { display: none; } .products-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .products-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Get 1 Entry For Every $1 Spent! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win $20,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a>
+            <a href="shop.html?cat=accessories">Accessories</a>
+            <a href="shop.html?cat=headwear">Headwear</a>
+            <a href="shop.html?cat=members-merch">Members Merch</a>
+            <a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a>
+            <a href="shop.html?cat=health-beauty">Health &amp; Beauty</a>
+            <a href="shop.html?cat=tools-diy">Tools &amp; DIY</a>
+            <a href="shop.html?cat=electronics">Electronics</a>
+            <a href="shop.html?cat=automotive">Automotive</a>
+            <a href="shop.html?cat=outdoor">Outdoor</a>
+            <a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Browse</h4>
+            <a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html" class="active">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping" /></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn" onclick="document.getElementById('searchBar').classList.toggle('open')">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Shop All</span></div></div>
+<div class="entry-banner"><span class="star">★</span> Every $1 You Spend = 1 Entry to Win! Shop Now &amp; Enter <span class="star">★</span></div>
+
+<div class="page-hero" style="padding:36px 24px">
+  <h1>Shop <span>All Products</span></h1>
+  <p>Browse our full collection — every purchase earns sweepstakes entries</p>
+</div>
+
+<div class="shop-layout">
+
+  <!-- SIDEBAR FILTERS -->
+  <aside class="filters-sidebar">
+    <div class="filter-card">
+      <h3>Category</h3>
+      <div class="filter-option"><input type="checkbox" id="f1"><label for="f1">Home &amp; Kitchen</label><span class="count">(24)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f2"><label for="f2">Electronics</label><span class="count">(18)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f3"><label for="f3">Health &amp; Beauty</label><span class="count">(15)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f4"><label for="f4">Tools &amp; DIY</label><span class="count">(12)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f5"><label for="f5">Automotive</label><span class="count">(9)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f6"><label for="f6">Outdoor</label><span class="count">(11)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f7"><label for="f7">Apparel</label><span class="count">(20)</span></div>
+      <div class="filter-option"><input type="checkbox" id="f8"><label for="f8">Accessories</label><span class="count">(14)</span></div>
+    </div>
+
+    <div class="filter-card">
+      <h3>Price Range</h3>
+      <div class="price-range">
+        <input type="number" placeholder="$Min" min="0" />
+        <span>–</span>
+        <input type="number" placeholder="$Max" min="0" />
+      </div>
+      <button class="btn-apply-filter">Apply Filter</button>
+    </div>
+
+    <div class="filter-card">
+      <h3>Availability</h3>
+      <div class="filter-option"><input type="checkbox" id="fa1" checked><label for="fa1">In Stock</label></div>
+      <div class="filter-option"><input type="checkbox" id="fa2"><label for="fa2">Sold Out</label></div>
+    </div>
+
+    <div class="filter-card">
+      <h3>Entries Earned</h3>
+      <div class="filter-option"><input type="checkbox" id="fe1"><label for="fe1">Under 30 entries</label></div>
+      <div class="filter-option"><input type="checkbox" id="fe2"><label for="fe2">30–60 entries</label></div>
+      <div class="filter-option"><input type="checkbox" id="fe3"><label for="fe3">60+ entries</label></div>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS AREA -->
+  <main class="products-area">
+    <div class="shop-toolbar">
+      <p class="results-count">Showing <strong>1–12</strong> of <strong>123</strong> products</p>
+      <div style="display:flex;gap:12px;align-items:center">
+        <select class="sort-select">
+          <option>Sort: Featured</option>
+          <option>Price: Low to High</option>
+          <option>Price: High to Low</option>
+          <option>Most Entries</option>
+          <option>Newest</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn active" title="Grid">⊞</button>
+          <button class="view-btn" title="List">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/83b47384-38da-4858-932c-a6262f922322_334cffd0-306e-4e7f-acdf-2d5c3f916c6d.jpg?v=1776104041&width=600" alt="Clothes Hangers" loading="lazy"/>
+          <div class="entry-badge">🎟️ 19 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Home &amp; Kitchen</div>
+          <h3>10-Pack: Heavy-Duty Plastic Anti-Skid Clothes Hangers</h3>
+          <div class="product-price">$19.00</div>
+          <a href="product.html?id=hangers" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/7048a225-0178-4724-acd9-446f58d60e1b.jpg?v=1774281025&width=600" alt="Tube Socks" loading="lazy"/>
+          <div class="badge-soldout">Sold Out</div>
+          <div class="entry-badge">🎟️ 29 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Apparel</div>
+          <h3>10-Pack: Soft Comfortable Tube Socks – Solid Colors</h3>
+          <div class="product-price">$29.00</div>
+          <a href="product.html?id=socks" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=600" alt="Power Strip 11-in-1" loading="lazy"/>
+          <div class="badge-new">New</div>
+          <div class="entry-badge">🎟️ 39 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3>11-in-1 Multifunctional Power Strip with Desk Lamp &amp; Clock</h3>
+          <div class="product-price">$39.00</div>
+          <a href="product.html?id=powerstrip11" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=600" alt="Power Strip 12-in-1" loading="lazy"/>
+          <div class="entry-badge">🎟️ 29 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3>12-in-1 Adjustable Desk Lamp Power Strip with USB Ports</h3>
+          <div class="product-price">$29.00</div>
+          <a href="product.html?id=powerstrip12" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=600" alt="Electric Grill" loading="lazy"/>
+          <div class="entry-badge">🎟️ 49 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Home &amp; Kitchen</div>
+          <h3>1500W Smokeless Electric Indoor Grill with Removable Non-Stick Plate</h3>
+          <div class="product-price">$49.00</div>
+          <a href="product.html?id=grill" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=600" alt="Massage Gun" loading="lazy"/>
+          <div class="entry-badge">🎟️ 80 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Health &amp; Beauty</div>
+          <h3>16-Head Deep Tissue Percussion Massage Gun</h3>
+          <div class="product-price">$80.00</div>
+          <a href="product.html?id=massage-gun" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/17-in-1-surge-protector-power-cord-5ft-braided-flat-extension-cable-with-6-usb-chargers-2-usb-c-11-ac-power-outlets-batteries-power-accessories-dailysale-516758.webp?v=1773690505&width=600" alt="Surge Protector" loading="lazy"/>
+          <div class="entry-badge">🎟️ 39 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3>17-in-1 Surge Protector Extension Cord with USB Ports</h3>
+          <div class="product-price">$39.00</div>
+          <a href="product.html?id=surge-protector" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/de28bfa4-c2bd-4634-abb7-e5d56754deb8.jpg?v=1773843926&width=600" alt="Soundbar" loading="lazy"/>
+          <div class="badge-soldout">Sold Out</div>
+          <div class="entry-badge">🎟️ 79 Entries With Purchase</div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3>2-in-1 Wireless Soundbar for TV – Detachable Bluetooth Speaker</h3>
+          <div class="product-price">$79.00</div>
+          <a href="product.html?id=soundbar" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <!-- Extra placeholder products -->
+      <div class="product-card">
+        <div class="product-img-wrap" style="background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:60px;">🍳</div>
+        <div class="product-info">
+          <div class="product-category">Home &amp; Kitchen</div>
+          <h3>Non-Stick Ceramic Frying Pan Set (3-Piece)</h3>
+          <div class="product-price">$55.00</div>
+          <a href="product.html" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap" style="background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:60px;">🔦</div>
+        <div class="product-info">
+          <div class="product-category">Tools &amp; DIY</div>
+          <h3>Rechargeable LED Flashlight – 5000 Lumens Tactical</h3>
+          <div class="product-price">$35.00</div>
+          <a href="product.html" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap" style="background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:60px;">🎧</div>
+        <div class="product-info">
+          <div class="product-category">Electronics</div>
+          <h3>Wireless Noise-Cancelling Over-Ear Headphones</h3>
+          <div class="product-price">$65.00</div>
+          <a href="product.html" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-img-wrap" style="background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:60px;">🚗</div>
+        <div class="product-info">
+          <div class="product-category">Automotive</div>
+          <h3>Car Vacuum Cleaner – Portable Cordless 8000PA Suction</h3>
+          <div class="product-price">$45.00</div>
+          <a href="product.html" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+
+    </div><!-- /products-grid -->
+
+    <div class="pagination">
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn dots">…</button>
+      <button class="page-btn">11</button>
+      <button class="page-btn" style="width:auto;padding:0 14px">Next →</button>
+    </div>
+
+  </main>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Free Entry Details In Rules.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes. Every dollar spent earns entries into exclusive giveaways.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a>
+        <a href="giveaways.html">Giveaways</a>
+        <a href="memberships.html">Memberships</a>
+        <a href="winners.html">Winners Circle</a>
+        <a href="start.html#spin-the-wheel">Spin &amp; Win</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="shipping-policy.html">Shipping Policy</a>
+        <a href="official-rules.html">Official Rules</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4>
+      <p>Giveaways are open only to legal residents of the United States, 21 years of age or older. See <a href="official-rules.html">Official Rules</a> for full eligibility requirements.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="shipping-policy.html">Shipping Policy</a>
+        <a href="contact.html">Contact</a>
+        <a href="official-rules.html">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Cart count from localStorage
+  const cartCount = JSON.parse(localStorage.getItem('pch_cart') || '[]').length;
+  document.getElementById('cartCount').textContent = cartCount;
+
+  // Sort + filter interactivity
+  document.querySelector('.sort-select').addEventListener('change', function() {
+    const grid = document.getElementById('productsGrid');
+    grid.style.opacity = '0.5';
+    setTimeout(() => { grid.style.opacity = '1'; }, 400);
+  });
+
+  // View toggle
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Pagination
+  document.querySelectorAll('.page-btn:not(.dots)').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>

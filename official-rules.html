@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Official Rules – PCH Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
+<style>
+.content-page { max-width: 860px; margin: 0 auto; padding: 56px 24px 80px; }
+.content-page h1 { font-family: var(--font-cond); font-size: 40px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+.content-page h1 span { color: var(--red); }
+.last-updated { font-size: 13px; color: var(--text-light); margin-bottom: 36px; }
+.content-page h2 { font-family: var(--font-cond); font-size: 22px; font-weight: 800; text-transform: uppercase; color: var(--navy); margin: 32px 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--gray-mid); }
+.content-page p { font-size: 15px; color: var(--text-mid); line-height: 1.8; margin-bottom: 16px; }
+.content-page ul { padding-left: 20px; margin-bottom: 16px; }
+.content-page li { font-size: 15px; color: var(--text-mid); line-height: 1.75; margin-bottom: 6px; }
+.content-page a { color: var(--red); text-decoration: underline; }
+.info-box { background: var(--gray-light); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+.info-box p { margin: 0; font-weight: 600; color: var(--text); }
+/* FAQ accordion */
+.faq-item { border: 1px solid var(--gray-mid); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.faq-q { padding: 18px 20px; font-size: 15px; font-weight: 700; color: var(--navy); cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--white); transition: background .15s; }
+.faq-q:hover { background: var(--gray-light); }
+.faq-q .faq-arrow { font-size: 18px; transition: transform .2s; color: var(--red); }
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 20px 18px; font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+/* Contact form */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.contact-form .field { margin-bottom: 16px; }
+.contact-form label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-mid); margin-bottom: 5px; }
+.contact-form input, .contact-form select, .contact-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-mid); border-radius: 8px; font-size: 15px; font-family: var(--font); outline: none; transition: border-color .2s; }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--red); }
+.contact-form textarea { resize: vertical; min-height: 120px; }
+.btn-submit { background: var(--red); color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .06em; text-transform: uppercase; padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer; font-family: var(--font); transition: background .2s, transform .15s; }
+.btn-submit:hover { background: var(--red-dark); transform: translateY(-1px); }
+.contact-info-card { background: var(--navy); border-radius: 14px; padding: 28px; color: #fff; }
+.contact-info-card h3 { font-family: var(--font-cond); font-size: 22px; font-weight: 900; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.ci-row { display: flex; gap: 12px; margin-bottom: 18px; align-items: flex-start; }
+.ci-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.ci-text h4 { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+.ci-text p { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.55; }
+@media(max-width:700px){ .contact-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col"><h4>Branded Merch</h4><a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Products</h4><a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <a href="shop.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></a>
+      <a href="login.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge">0</span></a>
+    </div>
+  </div>
+</header>
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Official Rules</span></div></div>
+<div class="page-hero"><h1>Official <span>Rules</span></h1><p>Complete sweepstakes rules and free entry instructions.</p></div>
+<div class="content-page">
+<p class="last-updated">Last updated: May 1, 2026</p>
+<div class="info-box"><p>📬 <strong>No Purchase Necessary.</strong> A purchase will not improve your chances of winning. See free entry instructions below.</p></div>
+<h2>Eligibility</h2>
+<p>PCH Shopping giveaways are open only to individuals who: (i) are legal residents of the United States; (ii) are physically located and residing within the United States at the time of entry; (iii) are twenty-one (21) years of age or older at the time of entry; (iv) have a valid residential street address (no P.O. Boxes for prize delivery); and (v) satisfy all other eligibility requirements herein. Employees and immediate family members of PCH Shopping and its affiliates are not eligible.</p>
+<h2>How to Enter — Purchase Method</h2>
+<p>Visit pchshopping.com and make an eligible product purchase. Every $1 spent (excluding taxes and shipping) earns one (1) sweepstakes entry into all active giveaways. Entries are credited to your account automatically upon purchase confirmation.</p>
+<h2>How to Enter — Free Mail-In Method</h2>
+<p>To enter without a purchase, hand-print your full name, complete mailing address (street, city, state, ZIP), date of birth, and the specific Giveaway Number on a plain 3"×5" card. Mail it in a stamped envelope to:</p>
+<p style="background:var(--gray-light);border-radius:8px;padding:16px 20px;font-weight:600;color:var(--navy)">
+PCH Shopping — [Giveaway Number]<br>
+Free Entry Department<br>
+382 Channel Drive<br>
+Port Washington, NY 11050
+</p>
+<p>Limit: one (1) hand-printed free mail entry per outer mailing envelope. Mechanically reproduced entries are void. All entries must be postmarked by the entry deadline and received within 7 days thereafter.</p>
+<h2>Prize Descriptions</h2>
+<ul>
+<li><strong>GWY #22915 — $1,000,000 SuperPrize:</strong> Paid as $5,000/week for 200 weeks (approximately $1,000,000), or winner may elect a lump-sum cash alternative of lesser value. Ends May 31, 2026.</li>
+<li><strong>GWY #22926 — Jeep® Wagoneer + $10,000:</strong> One (1) Jeep® Wagoneer (approximate retail value $65,000) plus $10,000 cash, or cash alternative of $75,000. Ends May 16, 2026.</li>
+<li><strong>GWY #23093 — BMW 230i Coupe:</strong> One (1) BMW 230i Coupe (approximate retail value $45,000) or cash alternative of $45,000. Ends June 4, 2026.</li>
+<li><strong>GWY #23089 — Subaru® Outback:</strong> One (1) Subaru® Outback (approximate retail value $43,965) or cash alternative of $43,965. Ends May 7, 2026.</li>
+</ul>
+<h2>Winner Selection</h2>
+<p>Winners will be selected by random drawing from all eligible entries received by the entry deadline. Drawings will be conducted by an independent judging organization within 30 days of each entry deadline. Odds of winning depend upon the total number of eligible entries received.</p>
+<h2>Winner Notification</h2>
+<p>Potential winners will be notified by email, phone, and/or mail. Potential winners must respond within 14 days of notification. Failure to respond within the required time may result in forfeiture of the prize and selection of an alternate winner.</p>
+<h2>Taxes</h2>
+<p>All federal, state, and local taxes on prizes are the sole responsibility of winners. Winners may be required to complete a W-9 tax form. Prizes valued at $600 or more will be reported to the IRS.</p>
+<h2>General Conditions</h2>
+<p>PCH Shopping reserves the right to cancel, suspend, or modify any giveaway if fraud, technical failures, or other factors impair the integrity of the promotion. All decisions of PCH Shopping are final. Void where prohibited by law.</p>
+<h2>Governing Law</h2>
+<p>These Official Rules are governed by the laws of the State of New York, without regard to conflict of law provisions. Any disputes shall be resolved in the courts of Nassau County, New York.</p>
+<h2>Sponsor</h2>
+<p>PCH Shopping, 382 Channel Drive, Port Washington, NY 11050.</p>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/><p>PCH Shopping — shop great products and enter for a chance to win life-changing prizes.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a></div>
+      <div class="footer-col"><h4>More Info</h4><a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div>
+    </div>
+    <div class="footer-legal"><h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4><p>Open to US residents 21+. See <a href="official-rules.html">Official Rules</a> for full details.</p></div>
+    <div class="footer-bottom"><p>© 2026 PCH Shopping. All rights reserved.</p><div class="footer-policy-links"><a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a><a href="contact.html">Contact</a></div></div>
+  </div>
+</footer><script>document.querySelector(".cart-badge").textContent=JSON.parse(localStorage.getItem("pch_cart")||"[]").length;</script></body></html>

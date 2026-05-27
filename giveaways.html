@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giveaways – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .giveaways-grid { max-width: 1200px; margin: 0 auto; padding: 48px 24px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+
+    .giveaway-card { border-radius: 14px; overflow: hidden; position: relative; box-shadow: 0 4px 24px rgba(0,0,0,0.12); transition: transform 0.2s, box-shadow 0.2s; background: var(--navy); }
+    .giveaway-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.22); }
+    .giveaway-card.featured { grid-column: 1 / -1; }
+
+    .giveaway-img { width: 100%; height: 320px; object-fit: cover; object-position: center; display: block; }
+    .giveaway-card.featured .giveaway-img { height: 480px; }
+
+    .giveaway-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 32px;
+    }
+    .giveaway-card.featured .giveaway-overlay { padding: 48px; }
+
+    .giveaway-badge { display: inline-block; background: var(--red); color: var(--white); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 12px; width: fit-content; }
+    .giveaway-badge.exclusive { background: var(--gold); color: var(--navy); }
+    .giveaway-badge.weekly { background: #1d4ed8; }
+
+    .giveaway-title { font-family: var(--font-cond); font-size: clamp(22px, 3vw, 42px); font-weight: 900; color: var(--white); text-transform: uppercase; line-height: 1.05; margin-bottom: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .giveaway-or { font-size: 16px; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+    .giveaway-ends { font-size: 13px; color: rgba(255,255,255,0.65); font-weight: 500; margin-bottom: 20px; }
+
+    .giveaway-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .countdown-mini { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 8px 14px; }
+    .countdown-mini .c-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+    .countdown-mini .c-time { font-family: var(--font-cond); font-size: 18px; font-weight: 900; color: var(--gold); letter-spacing: 0.04em; }
+
+    .btn-enter { background: var(--red); color: var(--white); font-weight: 900; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; padding: 13px 28px; border-radius: 6px; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; display: inline-block; text-align: center; }
+    .btn-enter:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-enter.gold { background: var(--gold); color: var(--navy); }
+    .btn-enter.gold:hover { background: var(--gold-dark); }
+
+    /* How to enter */
+    .how-section { background: var(--gray-light); padding: 60px 24px; }
+    .how-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .how-inner h2 { font-family: var(--font-cond); font-size: 36px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 10px; }
+    .how-inner h2 span { color: var(--red); }
+    .how-inner p { font-size: 16px; color: var(--text-light); margin-bottom: 48px; }
+    .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .how-step { text-align: center; }
+    .how-num { width: 56px; height: 56px; border-radius: 50%; background: var(--red); color: var(--white); font-family: var(--font-cond); font-size: 26px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .how-icon { font-size: 36px; margin-bottom: 12px; }
+    .how-step h3 { font-family: var(--font-cond); font-size: 20px; font-weight: 800; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+    .how-step p { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+    /* Free entry info */
+    .free-entry-box { max-width: 900px; margin: 40px auto; background: var(--navy); color: var(--white); border-radius: 14px; padding: 32px 40px; display: flex; align-items: center; gap: 32px; }
+    .free-entry-icon { font-size: 56px; flex-shrink: 0; }
+    .free-entry-box h3 { font-family: var(--font-cond); font-size: 24px; font-weight: 900; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .free-entry-box p { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+    .free-entry-box a { color: var(--gold); font-weight: 700; text-decoration: underline; }
+
+    @media (max-width: 768px) { .giveaways-grid { grid-template-columns: 1fr; } .giveaway-card.featured { grid-column: auto; } .how-steps { grid-template-columns: 1fr; } .free-entry-box { flex-direction: column; text-align: center; padding: 28px; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html?cat=headwear">Headwear</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html?cat=health-beauty">Health &amp; Beauty</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Giveaways</span></div></div>
+
+<div class="page-hero">
+  <h1>Active <span>Giveaways</span></h1>
+  <p>Enter now for your chance to win cars, cash, and life-changing prizes — guaranteed winners every week!</p>
+</div>
+
+<!-- GIVEAWAY CARDS -->
+<div class="giveaways-grid">
+
+  <!-- Featured: $1M SuperPrize -->
+  <div class="giveaway-card featured">
+    <img class="giveaway-img" src="https://www.pchshopping.com/cdn/shop/files/1MM_carousel_img_02.jpg?v=1774552267&width=1800" alt="$1,000,000 SuperPrize"/>
+    <div class="giveaway-overlay">
+      <span class="giveaway-badge exclusive">⭐ Exclusive Prize</span>
+      <h2 class="giveaway-title">Win The $1,000,000 SuperPrize</h2>
+      <p class="giveaway-or">Life-changing cash — paid as $5,000/week for life or lump sum</p>
+      <p class="giveaway-ends">📅 Ends May 31, 2026</p>
+      <div class="giveaway-meta">
+        <div class="countdown-mini">
+          <div class="c-label">Ends In</div>
+          <div class="c-time" id="cd1">30d 00:00:00</div>
+        </div>
+        <a href="giveaway-1million.html" class="btn-enter gold">Enter Now →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subaru -->
+  <div class="giveaway-card">
+    <img class="giveaway-img" src="https://www.pchshopping.com/cdn/shop/files/wk19_SubaruOutback-hero.jpg?v=1773350523&width=900" alt="Subaru Outback"/>
+    <div class="giveaway-overlay">
+      <span class="giveaway-badge weekly">🗓️ Weekly Grand Prize</span>
+      <h2 class="giveaway-title">Win A Subaru® Outback</h2>
+      <p class="giveaway-or">Or $43,965 Cash</p>
+      <p class="giveaway-ends">📅 Ends May 7, 2026</p>
+      <div class="giveaway-meta">
+        <div class="countdown-mini">
+          <div class="c-label">Ends In</div>
+          <div class="c-time" id="cd2">06d 00:00:00</div>
+        </div>
+        <a href="giveaway-subaru.html" class="btn-enter">Enter Now →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Jeep -->
+  <div class="giveaway-card">
+    <img class="giveaway-img" src="https://www.pchshopping.com/cdn/shop/files/JeepWagoneer_carousel_img.jpg?v=1774967535&width=900" alt="Jeep Wagoneer"/>
+    <div class="giveaway-overlay">
+      <span class="giveaway-badge exclusive">⭐ Exclusive Prize</span>
+      <h2 class="giveaway-title">Win A Jeep® Wagoneer + $10,000</h2>
+      <p class="giveaway-or">Or $75,000 Cash Alternative</p>
+      <p class="giveaway-ends">📅 Ends May 16, 2026</p>
+      <div class="giveaway-meta">
+        <div class="countdown-mini">
+          <div class="c-label">Ends In</div>
+          <div class="c-time" id="cd3">15d 00:00:00</div>
+        </div>
+        <a href="giveaway-jeep.html" class="btn-enter">Enter Now →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BMW -->
+  <div class="giveaway-card">
+    <img class="giveaway-img" src="https://www.pchshopping.com/cdn/shop/files/WGP_BMW-230i_carousel_img.jpg?v=1775078306&width=900" alt="BMW 230i"/>
+    <div class="giveaway-overlay">
+      <span class="giveaway-badge exclusive">⭐ Exclusive Prize</span>
+      <h2 class="giveaway-title">Win A BMW 230i Coupe</h2>
+      <p class="giveaway-or">Or $45,000 Cash Alternative</p>
+      <p class="giveaway-ends">📅 Ends June 4, 2026</p>
+      <div class="giveaway-meta">
+        <div class="countdown-mini">
+          <div class="c-label">Ends In</div>
+          <div class="c-time" id="cd4">34d 00:00:00</div>
+        </div>
+        <a href="giveaway-bmw.html" class="btn-enter">Enter Now →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- HOW TO ENTER -->
+<div class="how-section">
+  <div class="how-inner">
+    <h2>How To <span>Enter</span></h2>
+    <p>Three easy ways to stack up your entries and boost your chances of winning</p>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-icon">🛒</div>
+        <div class="how-num">1</div>
+        <h3>Shop &amp; Earn</h3>
+        <p>Every $1 you spend in the PCH Shopping store earns 1 sweepstakes entry — automatically added to all active giveaways.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-icon">🎡</div>
+        <div class="how-num">2</div>
+        <h3>Spin the Wheel</h3>
+        <p>Use our daily Spin &amp; Win wheel for a chance to win$200,000 – $1,000,000 in bonus prize money. One free spin every day!</p>
+      </div>
+      <div class="how-step">
+        <div class="how-icon">💎</div>
+        <div class="how-num">3</div>
+        <h3>Become a Member</h3>
+        <p>Gold, Platinum, and Diamond memberships give you thousands of automatic monthly entries plus exclusive member discounts.</p>
+      </div>
+    </div>
+
+    <div class="free-entry-box">
+      <div class="free-entry-icon">📬</div>
+      <div>
+        <h3>No Purchase? No Problem!</h3>
+        <p>You can enter any giveaway completely free by mail. Send a handwritten card with your name, address, and the giveaway number to the address in the <a href="official-rules.html">Official Rules</a>. No purchase necessary. A purchase will not improve your chances of winning.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Free Entry Details In <a href="official-rules.html">Official Rules</a>.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes. Every dollar spent earns entries into exclusive giveaways.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4>
+      <p>Giveaways are open only to legal residents of the United States, 21 years of age or older. See <a href="official-rules.html">Official Rules</a> for full eligibility requirements and free entry instructions.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Official Rules</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('cartCount').textContent = JSON.parse(localStorage.getItem('pch_cart') || '[]').length;
+
+  // Live countdown timers
+  function makeCountdown(endDate, elId) {
+    function tick() {
+      const now = new Date();
+      const end = new Date(endDate);
+      const diff = Math.max(0, end - now);
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const el = document.getElementById(elId);
+      if (el) el.textContent = `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+  makeCountdown('2026-05-31T23:59:59', 'cd1');
+  makeCountdown('2026-05-07T23:59:59', 'cd2');
+  makeCountdown('2026-05-16T23:59:59', 'cd3');
+  makeCountdown('2026-06-04T23:59:59', 'cd4');
+</script>
+</body>
+</html>

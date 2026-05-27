@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .cart-layout { max-width: 1200px; margin: 0 auto; padding: 48px 24px; display: grid; grid-template-columns: 1fr 380px; gap: 40px; align-items: start; }
+
+    /* Cart items */
+    .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .cart-header h1 { font-family: var(--font-cond); font-size: 32px; font-weight: 900; text-transform: uppercase; color: var(--navy); }
+    .cart-count { font-size: 15px; color: var(--text-light); font-weight: 500; }
+    .btn-clear { background: none; border: none; font-size: 13px; color: var(--text-light); font-weight: 600; cursor: pointer; text-decoration: underline; }
+    .btn-clear:hover { color: var(--red); }
+
+    .cart-items { display: flex; flex-direction: column; gap: 16px; }
+    .cart-item { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 12px; padding: 20px; display: flex; gap: 20px; align-items: flex-start; }
+    .cart-item-img { width: 96px; height: 96px; border-radius: 8px; object-fit: cover; background: var(--gray-light); flex-shrink: 0; }
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 4px; }
+    .cart-item-name { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.35; margin-bottom: 8px; }
+    .cart-item-entries { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,33,71,0.08); color: var(--navy); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 5px; margin-bottom: 12px; }
+    .cart-item-controls { display: flex; align-items: center; gap: 12px; }
+    .qty-ctrl { display: flex; align-items: center; border: 1px solid var(--gray-mid); border-radius: 6px; overflow: hidden; }
+    .qty-ctrl button { width: 32px; height: 32px; background: var(--gray-light); border: none; font-size: 16px; font-weight: 700; cursor: pointer; color: var(--navy); transition: background 0.15s; }
+    .qty-ctrl button:hover { background: var(--gray-mid); }
+    .qty-ctrl input { width: 44px; height: 32px; border: none; text-align: center; font-size: 14px; font-weight: 700; font-family: var(--font); }
+    .btn-remove { background: none; border: none; font-size: 12px; color: var(--text-light); cursor: pointer; font-weight: 600; text-decoration: underline; }
+    .btn-remove:hover { color: var(--red); }
+    .cart-item-price { font-size: 20px; font-weight: 900; color: var(--red); font-family: var(--font-cond); white-space: nowrap; }
+
+    /* Empty cart */
+    .empty-cart { text-align: center; padding: 80px 24px; }
+    .empty-cart .empty-icon { font-size: 72px; margin-bottom: 20px; }
+    .empty-cart h2 { font-family: var(--font-cond); font-size: 32px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 10px; }
+    .empty-cart p { font-size: 16px; color: var(--text-light); margin-bottom: 28px; }
+
+    /* Entry summary bar */
+    .entries-summary { background: linear-gradient(135deg,#001233,#002d6e); border-radius: 10px; padding: 18px 20px; margin-top: 20px; display: flex; align-items: center; gap: 14px; }
+    .es-icon { font-size: 32px; }
+    .es-text h4 { font-family: var(--font-cond); font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 2px; }
+    .es-text p { font-size: 13px; color: rgba(255,255,255,0.65); }
+
+    /* Order summary */
+    .order-summary { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 14px; padding: 28px; position: sticky; top: 80px; }
+    .order-summary h2 { font-family: var(--font-cond); font-size: 22px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--gray-mid); }
+    .summary-row { display: flex; justify-content: space-between; font-size: 15px; color: var(--text-mid); padding: 8px 0; }
+    .summary-row.total { font-size: 20px; font-weight: 900; color: var(--navy); border-top: 2px solid var(--gray-mid); margin-top: 8px; padding-top: 16px; }
+    .summary-row.total span:last-child { color: var(--red); }
+    .summary-row .entries-note { color: var(--gold); font-weight: 700; }
+
+    .coupon-row { display: flex; gap: 8px; margin: 16px 0; }
+    .coupon-input { flex: 1; padding: 10px 14px; border: 1px solid var(--gray-mid); border-radius: 6px; font-size: 14px; font-family: var(--font); }
+    .btn-apply-coupon { background: var(--navy); color: var(--white); font-weight: 700; font-size: 13px; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; transition: background 0.18s; white-space: nowrap; }
+    .btn-apply-coupon:hover { background: var(--red); }
+
+    .btn-checkout { display: block; width: 100%; background: var(--red); color: var(--white); font-weight: 900; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-top: 16px; text-align: center; }
+    .btn-checkout:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-continue { display: block; width: 100%; background: transparent; color: var(--navy); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; padding: 14px; border-radius: 8px; border: 2px solid var(--navy); cursor: pointer; transition: all 0.18s; margin-top: 10px; text-align: center; }
+    .btn-continue:hover { background: var(--navy); color: var(--white); }
+
+    .secure-badges { display: flex; justify-content: center; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
+    .sec-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-light); font-weight: 600; }
+    .sec-badge span { font-size: 16px; }
+
+    /* Membership upsell */
+    .upsell-card { background: linear-gradient(135deg,#001233,#002d6e); border-radius: 10px; padding: 20px; margin-top: 16px; }
+    .upsell-card h4 { font-family: var(--font-cond); font-size: 18px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+    .upsell-card p { font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 12px; line-height: 1.55; }
+    .btn-upsell { display: block; background: var(--gold); color: var(--navy); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; padding: 11px; border-radius: 6px; text-align: center; transition: background 0.18s; }
+    .btn-upsell:hover { background: var(--gold-dark); }
+
+    /* You may also like */
+    .also-like { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+    .also-like h2 { font-family: var(--font-cond); font-size: 28px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 24px; }
+    .also-like h2 span { color: var(--red); }
+    .also-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+    .mini-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+    .mini-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-3px); }
+    .mini-card-img { aspect-ratio: 1/1; overflow: hidden; background: var(--gray-light); }
+    .mini-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .mini-card-info { padding: 12px 14px 14px; }
+    .mini-card-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.35; }
+    .mini-card-price { font-size: 15px; font-weight: 800; color: var(--red); margin-bottom: 8px; }
+    .btn-mini-add { display: block; width: 100%; background: var(--navy); color: var(--white); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px; border-radius: 4px; text-align: center; transition: background 0.18s; border: none; cursor: pointer; font-family: var(--font); }
+    .btn-mini-add:hover { background: var(--red); }
+
+    @media (max-width: 968px) { .cart-layout { grid-template-columns: 1fr; } .order-summary { position: static; } .also-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 500px) { .also-grid { grid-template-columns: 1fr; } .cart-item { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Cart</span></div></div>
+
+<div class="cart-layout">
+
+  <!-- LEFT: Cart Items -->
+  <div>
+    <div class="cart-header">
+      <h1>Your Cart</h1>
+      <div style="display:flex;gap:16px;align-items:center">
+        <span class="cart-count" id="cartCountLabel">0 items</span>
+        <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+
+    <div id="cartItemsContainer" class="cart-items"></div>
+
+    <div id="emptyCartMsg" class="empty-cart" style="display:none">
+      <div class="empty-icon">🛒</div>
+      <h2>Your Cart Is Empty</h2>
+      <p>Looks like you haven't added anything yet. Start shopping to earn entries and win big!</p>
+      <a href="shop.html" class="btn-primary">Shop All Products</a>
+    </div>
+
+    <div class="entries-summary" id="entriesSummaryBar" style="display:none">
+      <div class="es-icon">🎟️</div>
+      <div class="es-text">
+        <h4>You'll Earn <span id="totalEntriesDisplay">0</span> Sweepstakes Entries!</h4>
+        <p>These entries will be added to all active giveaways including the $1,000,000 SuperPrize.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Order Summary -->
+  <div class="order-summary">
+    <h2>Order Summary</h2>
+    <div class="summary-row"><span>Subtotal</span><span id="subtotalDisplay">$0.00</span></div>
+    <div class="summary-row"><span>Shipping</span><span id="shippingDisplay">FREE</span></div>
+    <div class="summary-row"><span>Sweepstakes Entries</span><span class="entries-note" id="summaryEntries">0 entries</span></div>
+    <div class="summary-row total"><span>Total</span><span id="totalDisplay">$0.00</span></div>
+
+    <div class="coupon-row">
+      <input class="coupon-input" type="text" placeholder="Promo / Coupon code" id="couponInput" />
+      <button class="btn-apply-coupon" onclick="applyCoupon()">Apply</button>
+    </div>
+
+    <button class="btn-checkout" onclick="checkout()">🔒 Proceed to Checkout</button>
+    <a href="shop.html" class="btn-continue">← Continue Shopping</a>
+
+    <div class="secure-badges">
+      <div class="sec-badge"><span>🔒</span> SSL Secure</div>
+      <div class="sec-badge"><span>💳</span> Encrypted Payment</div>
+      <div class="sec-badge"><span>↩️</span> 30-Day Returns</div>
+    </div>
+
+    <div class="upsell-card">
+      <h4>💎 Boost Your Entries!</h4>
+      <p>Become a Diamond Member and get 20,000 automatic entries every month plus 50% off reward packs and 20% merch discount.</p>
+      <a href="memberships.html" class="btn-upsell">Become a Member →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- YOU MAY ALSO LIKE -->
+<div class="also-like">
+  <h2>You May Also <span>Like</span></h2>
+  <div class="also-grid">
+    <div class="mini-card">
+      <div class="mini-card-img"><img src="https://www.pchshopping.com/cdn/shop/files/83b47384-38da-4858-932c-a6262f922322_334cffd0-306e-4e7f-acdf-2d5c3f916c6d.jpg?v=1776104041&width=400" alt="Hangers"/></div>
+      <div class="mini-card-info"><div class="mini-card-name">10-Pack Heavy-Duty Clothes Hangers</div><div class="mini-card-price">$19.00</div><button class="btn-mini-add" onclick="quickAdd('hangers','10-Pack Heavy-Duty Clothes Hangers',19,19)">Add to Cart</button></div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-card-img"><img src="https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=400" alt="Grill"/></div>
+      <div class="mini-card-info"><div class="mini-card-name">1500W Smokeless Electric Indoor Grill</div><div class="mini-card-price">$49.00</div><button class="btn-mini-add" onclick="quickAdd('grill','1500W Smokeless Electric Indoor Grill',49,49)">Add to Cart</button></div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-card-img"><img src="https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=400" alt="Massage Gun"/></div>
+      <div class="mini-card-info"><div class="mini-card-name">16-Head Deep Tissue Massage Gun</div><div class="mini-card-price">$80.00</div><button class="btn-mini-add" onclick="quickAdd('massage-gun','16-Head Deep Tissue Massage Gun',80,80)">Add to Cart</button></div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-card-img"><img src="https://www.pchshopping.com/cdn/shop/files/17-in-1-surge-protector-power-cord-5ft-braided-flat-extension-cable-with-6-usb-chargers-2-usb-c-11-ac-power-outlets-batteries-power-accessories-dailysale-516758.webp?v=1773690505&width=400" alt="Surge Protector"/></div>
+      <div class="mini-card-info"><div class="mini-card-name">17-in-1 Surge Protector Extension Cord</div><div class="mini-card-price">$39.00</div><button class="btn-mini-add" onclick="quickAdd('surge-protector','17-in-1 Surge Protector',39,39)">Add to Cart</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong></p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const PRODUCT_IMGS = {
+    'hangers':         'https://www.pchshopping.com/cdn/shop/files/83b47384-38da-4858-932c-a6262f922322_334cffd0-306e-4e7f-acdf-2d5c3f916c6d.jpg?v=1776104041&width=200',
+    'socks':           'https://www.pchshopping.com/cdn/shop/files/7048a225-0178-4724-acd9-446f58d60e1b.jpg?v=1774281025&width=200',
+    'powerstrip11':    'https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=200',
+    'powerstrip12':    'https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=200',
+    'grill':           'https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=200',
+    'massage-gun':     'https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=200',
+    'surge-protector': 'https://www.pchshopping.com/cdn/shop/files/17-in-1-surge-protector-power-cord-5ft-braided-flat-extension-cable-with-6-usb-chargers-2-usb-c-11-ac-power-outlets-batteries-power-accessories-dailysale-516758.webp?v=1773690505&width=200',
+    'soundbar':        'https://www.pchshopping.com/cdn/shop/files/de28bfa4-c2bd-4634-abb7-e5d56754deb8.jpg?v=1773843926&width=200',
+  };
+
+  function getCart() { return JSON.parse(localStorage.getItem('pch_cart') || '[]'); }
+  function saveCart(c) { localStorage.setItem('pch_cart', JSON.stringify(c)); renderCart(); }
+  function clearCart() { if (confirm('Clear your entire cart?')) { saveCart([]); } }
+
+  function quickAdd(id, title, price, entries) {
+    const cart = getCart();
+    cart.push({ id, title, price: '$' + price + '.00', entries });
+    saveCart(cart);
+    alert('✅ Added to cart!');
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const container = document.getElementById('cartItemsContainer');
+    const emptyMsg  = document.getElementById('emptyCartMsg');
+    const entriesBar = document.getElementById('entriesSummaryBar');
+    document.getElementById('cartCount').textContent = cart.length;
+    document.getElementById('cartCountLabel').textContent = cart.length + ' item' + (cart.length !== 1 ? 's' : '');
+
+    if (cart.length === 0) {
+      container.innerHTML = '';
+      emptyMsg.style.display = '';
+      entriesBar.style.display = 'none';
+      document.getElementById('subtotalDisplay').textContent = '$0.00';
+      document.getElementById('shippingDisplay').textContent = 'FREE';
+      document.getElementById('totalDisplay').textContent = '$0.00';
+      document.getElementById('summaryEntries').textContent = '0 entries';
+      return;
+    }
+
+    emptyMsg.style.display = 'none';
+    entriesBar.style.display = 'flex';
+
+    // Aggregate by id
+    const grouped = {};
+    cart.forEach(item => {
+      if (!grouped[item.id]) grouped[item.id] = { ...item, qty: 0 };
+      grouped[item.id].qty++;
+    });
+
+    let subtotal = 0, totalEntries = 0;
+    container.innerHTML = '';
+
+    Object.values(grouped).forEach(item => {
+      const priceNum = parseFloat((item.price || '$0').replace('$','')) || 0;
+      const lineTotal = priceNum * item.qty;
+      const lineEntries = (item.entries || priceNum) * item.qty;
+      subtotal += lineTotal;
+      totalEntries += lineEntries;
+
+      const imgSrc = PRODUCT_IMGS[item.id] || '';
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        ${imgSrc ? `<img class="cart-item-img" src="${imgSrc}" alt="${item.title}" />` : `<div class="cart-item-img" style="background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:32px">🛒</div>`}
+        <div class="cart-item-info">
+          <div class="cart-item-cat">PCH Shopping</div>
+          <div class="cart-item-name">${item.title}</div>
+          <div class="cart-item-entries">🎟️ ${lineEntries} entries earned</div>
+          <div class="cart-item-controls">
+            <div class="qty-ctrl">
+              <button onclick="changeItemQty('${item.id}', -1)">−</button>
+              <input type="number" value="${item.qty}" min="1" readonly />
+              <button onclick="changeItemQty('${item.id}', 1)">+</button>
+            </div>
+            <button class="btn-remove" onclick="removeItem('${item.id}')">Remove</button>
+          </div>
+        </div>
+        <div class="cart-item-price">$${lineTotal.toFixed(2)}</div>`;
+      container.appendChild(div);
+    });
+
+    const shipping = subtotal >= 50 ? 'FREE' : '$5.99';
+    const shippingNum = subtotal >= 50 ? 0 : 5.99;
+    const total = subtotal + shippingNum;
+
+    document.getElementById('subtotalDisplay').textContent = '$' + subtotal.toFixed(2);
+    document.getElementById('shippingDisplay').textContent = shipping;
+    document.getElementById('totalDisplay').textContent = '$' + total.toFixed(2);
+    document.getElementById('summaryEntries').textContent = totalEntries.toLocaleString() + ' entries';
+    document.getElementById('totalEntriesDisplay').textContent = totalEntries.toLocaleString();
+  }
+
+  function changeItemQty(id, delta) {
+    const cart = getCart();
+    const count = cart.filter(i => i.id === id).length;
+    const newCount = Math.max(0, count + delta);
+    const filtered = cart.filter(i => i.id !== id);
+    const template = cart.find(i => i.id === id);
+    for (let i = 0; i < newCount; i++) filtered.push({ ...template });
+    saveCart(filtered);
+  }
+
+  function removeItem(id) {
+    const cart = getCart().filter(i => i.id !== id);
+    saveCart(cart);
+  }
+
+  function applyCoupon() {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    if (code === 'PCH10') alert('✅ Coupon applied: 10% off your order!');
+    else if (code === 'SPIN') alert('✅ Bonus: 500 extra sweepstakes entries added!');
+    else alert('❌ Invalid coupon code. Try PCH10 or SPIN.');
+  }
+
+  function checkout() {
+    const cart = getCart();
+    if (cart.length === 0) { alert('Your cart is empty!'); return; }
+    document.getElementById('paymentDownCartModal').classList.add('open');
+  }
+
+  renderCart();
+</script>
+
+<style>
+.pch-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px);}
+.pch-modal-overlay.open{display:flex;}
+.pd-box{background:#fff;border-radius:20px;width:100%;max-width:460px;box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden;}
+.pd-hdr{background:linear-gradient(135deg,#b45309,#92400e);padding:28px;text-align:center;position:relative;}
+.pd-hdr .pd-icon{font-size:52px;margin-bottom:10px;}
+.pd-hdr h2{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:900;color:#fff;text-transform:uppercase;}
+.pd-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.12);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pd-close:hover{background:#c8102e;}
+.pd-bdy{padding:26px;}
+.pd-bdy p{font-size:14px;color:#374151;line-height:1.7;margin-bottom:16px;text-align:center;}
+.pd-note{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e;margin-bottom:20px;font-weight:600;}
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.ch-btn{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700;font-size:14px;text-decoration:none;transition:transform .15s,box-shadow .15s;}
+.ch-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.15);}
+.ch-btn.wa{background:#25D366;color:#fff;}
+.ch-btn.tg{background:#229ED9;color:#fff;}
+.ch-btn .chi{font-size:24px;}
+.ch-btn .cht .chtt{font-size:13px;font-weight:800;text-transform:uppercase;}
+.ch-btn .cht .chts{font-size:11px;opacity:.8;}
+.btn-got-it{width:100%;background:#002147;color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:"Barlow",sans-serif;text-transform:uppercase;letter-spacing:.06em;}
+.btn-got-it:hover{background:#003580;}
+
+/* Chat FAB */
+.chat-fab{position:fixed;bottom:28px;right:28px;z-index:9000;width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#002147,#003580);box-shadow:0 6px 24px rgba(0,33,71,.45),0 0 0 4px rgba(245,197,24,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:28px;transition:transform .2s,box-shadow .2s;animation:fabP 2.5s ease-in-out infinite;}
+@keyframes fabP{0%,100%{box-shadow:0 6px 24px rgba(0,33,71,.45),0 0 0 4px rgba(245,197,24,.3);}50%{box-shadow:0 6px 32px rgba(0,33,71,.6),0 0 0 8px rgba(245,197,24,.15);}}
+.chat-fab:hover{transform:scale(1.1) translateY(-2px);}
+.chat-fab-badge{position:absolute;top:0;right:0;background:#c8102e;color:#fff;font-size:10px;font-weight:800;width:20px;height:20px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;}
+.chat-win{display:none;position:fixed;bottom:104px;right:28px;z-index:9000;width:340px;height:480px;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);flex-direction:column;overflow:hidden;}
+.chat-win.open{display:flex;}
+.chat-hd{background:linear-gradient(135deg,#002147,#003580);padding:14px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.chat-av{width:40px;height:40px;border-radius:50%;background:#f5c518;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid rgba(255,255,255,.3);}
+.chat-hi h4{font-size:14px;font-weight:800;color:#fff;}
+.chat-hi p{font-size:11px;color:rgba(255,255,255,.6);}
+.odot{display:inline-block;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-right:4px;}
+.chat-x{margin-left:auto;background:rgba(255,255,255,.12);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.chat-x:hover{background:#c8102e;}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;background:#f8f9ff;}
+.cmsg{display:flex;gap:7px;align-items:flex-end;max-width:90%;}
+.cmsg.bot{align-self:flex-start;}.cmsg.usr{align-self:flex-end;flex-direction:row-reverse;}
+.cbub{padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.55;}
+.cmsg.bot .cbub{background:#fff;color:#111827;border:1px solid #e5e7eb;border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.cmsg.usr .cbub{background:#002147;color:#fff;border-bottom-right-radius:4px;}
+.mav{width:26px;height:26px;border-radius:50%;background:#f5c518;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.ctime{font-size:10px;color:#9ca3af;margin-top:2px;text-align:right;}
+.ctyping{display:none;align-self:flex-start;gap:7px;align-items:flex-end;}
+.ctyping.show{display:flex;}
+.tbub{background:#fff;border:1px solid #e5e7eb;border-radius:14px;border-bottom-left-radius:4px;padding:9px 14px;display:flex;gap:4px;align-items:center;}
+.tdot{width:7px;height:7px;border-radius:50%;background:#9ca3af;animation:td 1.4s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s;}.tdot:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+.qreps{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px;}
+.qr{background:#fff;border:1.5px solid #002147;color:#002147;font-size:11px;font-weight:700;padding:5px 10px;border-radius:18px;cursor:pointer;font-family:"Barlow",sans-serif;transition:all .15s;white-space:nowrap;}
+.qr:hover{background:#002147;color:#fff;}
+.cinput-row{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #e5e7eb;background:#fff;flex-shrink:0;}
+.cinp{flex:1;padding:9px 13px;border:1.5px solid #e5e7eb;border-radius:22px;font-size:13px;font-family:"Barlow",sans-serif;outline:none;}
+.cinp:focus{border-color:#002147;}
+.csend{width:38px;height:38px;border-radius:50%;background:#002147;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.csend:hover{background:#c8102e;}
+.csend svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+
+<!-- Payment Down Modal -->
+<div class="pch-modal-overlay" id="paymentDownCartModal">
+  <div class="pd-box">
+    <div class="pd-hdr">
+      <button class="pd-close" onclick="document.getElementById('paymentDownCartModal').classList.remove('open')">✕</button>
+      <div class="pd-icon">🔧</div>
+      <h2>Payment Service Temporarily Unavailable</h2>
+    </div>
+    <div class="pd-bdy">
+      <p>Our online payment system is currently undergoing scheduled maintenance to ensure the highest level of security for your transactions.</p>
+      <div class="pd-note">💡 <strong>No worries!</strong> Contact our 24/7 support team to complete your purchase instantly.</div>
+      <div class="ch-grid">
+        <a class="ch-btn wa" href="https://wa.me/12513845775" target="_blank"><span class="chi">💬</span><div class="cht"><div class="chtt">WhatsApp</div><div class="chts">+1251384-5775</div></div></a>
+        <a class="ch-btn tg" href="https://t.me/12513845775" target="_blank"><span class="chi">✈️</span><div class="cht"><div class="chtt">Telegram</div><div class="chts">+1251384-5775</div></div></a>
+      </div>
+      <button class="btn-got-it" onclick="document.getElementById('paymentDownCartModal').classList.remove('open')">Got It — I'll Contact Support</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat FAB -->
+<button class="chat-fab" onclick="toggleChatC()" title="Chat with Support">💬<div class="chat-fab-badge">AI</div></button>
+
+<!-- Chat Window -->
+<div class="chat-win" id="chatWinC">
+  <div class="chat-hd">
+    <div class="chat-av">🤖</div>
+    <div class="chat-hi"><h4>PCH Support Agent</h4><p><span class="odot"></span>Online — AI Powered</p></div>
+    <button class="chat-x" onclick="toggleChatC()">✕</button>
+  </div>
+  <div class="chat-msgs" id="chatMsgsC">
+    <div class="cmsg bot"><div class="mav">🤖</div><div><div class="cbub">👋 Hi! I'm PCH's AI agent. Need help with your cart, payment, or an order? Ask me anything!</div><div class="ctime">Just now</div></div></div>
+  </div>
+  <div class="ctyping" id="chatTypingC"><div class="mav">🤖</div><div class="tbub"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>
+  <div class="qreps">
+    <button class="qr" onclick="sendQC('Payment help')">💳 Payment</button>
+    <button class="qr" onclick="sendQC('Track my order')">📦 Track Order</button>
+    <button class="qr" onclick="sendQC('Return or refund')">↩️ Returns</button>
+    <button class="qr" onclick="sendQC('Contact human agent')">👤 Human Agent</button>
+  </div>
+  <div class="cinput-row">
+    <input class="cinp" id="chatInpC" placeholder="Type your message…" onkeydown="if(event.key==='Enter')sendMsgC()"/>
+    <button class="csend" onclick="sendMsgC()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+
+<script>
+var chatOpenC=false;
+function toggleChatC(){chatOpenC=!chatOpenC;document.getElementById('chatWinC').classList.toggle('open',chatOpenC);if(chatOpenC){document.getElementById('chatInpC').focus();document.querySelector('.chat-fab-badge').style.display='none';}}
+function getBotC(msg){var l=msg.toLowerCase();if(l.includes('pay')||l.includes('card')||l.includes('checkout'))return'💳 Our payment system is temporarily down for maintenance.<br><br>To complete your order, please contact us:<br>📱 <a href="https://wa.me/12513845775" target="_blank" style="color:#25D366;font-weight:700">WhatsApp: 12513845775</a><br>✈️ <a href="https://t.me/12513845775" target="_blank" style="color:#229ED9;font-weight:700">Telegram: 12513845775</a><br><br>We're available 24/7!';if(l.includes('track')||l.includes('order')||l.includes('ship'))return'📦 Once your order ships, you'll receive a tracking email. Standard delivery takes 5–10 business days.<br><br>For urgent tracking help:<br>📱 <a href="https://wa.me/12513845775" target="_blank" style="color:#25D366;font-weight:700">WhatsApp: 12513845775</a>';if(l.includes('return')||l.includes('refund')||l.includes('exchange'))return'↩️ We offer a <strong>30-day return policy</strong> on most items.<br><br>To start a return: <a href="refund-policy.html" style="color:#002147;font-weight:700">see our refund policy</a> or contact support:<br>📱 <a href="https://wa.me/12513845775" target="_blank" style="color:#25D366;font-weight:700">WhatsApp: 12513845775</a>';if(l.includes('human')||l.includes('agent')||l.includes('contact')||l.includes('support'))return'👤 <strong>Reach a live agent now:</strong><br><br>📱 <a href="12513845775" target="_blank" style="color:#25D366;font-weight:700">WhatsApp: 12513845775</a><br>✈️ <a href="https://t.me/12513845775" target="_blank" style="color:#229ED9;font-weight:700">Telegram: 12513845775</a><br><br>Average response: <strong>under 5 minutes</strong>!';return'Thanks for your message! For the fastest help, our support team is available 24/7:<br><br>📱 <a href="https://wa.me/12513845775" target="_blank" style="color:#25D366;font-weight:700">WhatsApp: 12513845775</a><br>✈️ <a href="https://t.me/12513845775" target="_blank" style="color:#229ED9;font-weight:700">Telegram: 12513845775</a>';}
+function appendMsgC(text,type){var c=document.getElementById('chatMsgsC');var d=document.createElement('div');d.className='cmsg '+type;var t=new Date();var ts=t.getHours().toString().padStart(2,'0')+':'+t.getMinutes().toString().padStart(2,'0');d.innerHTML=type==='bot'?'<div class="mav">🤖</div><div><div class="cbub">'+text+'</div><div class="ctime">'+ts+'</div></div>':'<div><div class="cbub">'+text+'</div><div class="ctime">'+ts+'</div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function sendMsgC(){var inp=document.getElementById('chatInpC');var txt=inp.value.trim();if(!txt)return;inp.value='';document.querySelector('.qreps').style.display='none';appendMsgC(txt,'usr');document.getElementById('chatTypingC').classList.add('show');document.getElementById('chatMsgsC').scrollTop=99999;setTimeout(function(){document.getElementById('chatTypingC').classList.remove('show');appendMsgC(getBotC(txt),'bot');},800+Math.random()*600);}
+function sendQC(t){document.getElementById('chatInpC').value=t;sendMsgC();}
+</script>
+</body>
+</html>

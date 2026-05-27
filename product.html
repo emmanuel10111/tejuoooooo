@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .product-detail { max-width: 1200px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+
+    /* Image gallery */
+    .gallery { display: flex; flex-direction: column; gap: 12px; }
+    .gallery-main { border-radius: 12px; overflow: hidden; background: var(--gray-light); aspect-ratio: 1/1; position: relative; }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .gallery-main:hover img { transform: scale(1.05); }
+    .gallery-main .entry-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,33,71,0.88); color: var(--gold); font-size: 13px; font-weight: 700; text-align: center; padding: 10px; letter-spacing: 0.04em; }
+    .gallery-thumbs { display: flex; gap: 10px; }
+    .thumb { width: 72px; height: 72px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; background: var(--gray-light); transition: border-color 0.15s; flex-shrink: 0; }
+    .thumb.active { border-color: var(--red); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-placeholder { display: flex; align-items: center; justify-content: center; font-size: 28px; background: var(--gray-light); width: 100%; height: 100%; }
+
+    /* Product info */
+    .product-detail-info {}
+    .product-detail-category { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 8px; }
+    .product-detail-title { font-family: var(--font-cond); font-size: clamp(24px, 3vw, 38px); font-weight: 900; color: var(--navy); line-height: 1.1; margin-bottom: 16px; text-transform: uppercase; }
+    .product-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .stars { color: var(--gold); font-size: 18px; letter-spacing: 2px; }
+    .rating-count { font-size: 14px; color: var(--text-light); font-weight: 500; }
+    .product-detail-price { font-size: 42px; font-weight: 900; color: var(--red); margin-bottom: 6px; font-family: var(--font-cond); }
+    .entries-earned { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: var(--gold); font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 6px; margin-bottom: 24px; letter-spacing: 0.04em; }
+    .entries-earned .ticket { font-size: 18px; }
+
+    .divider { height: 1px; background: var(--gray-mid); margin: 24px 0; }
+
+    /* Description */
+    .product-desc { font-size: 15px; color: var(--text-mid); line-height: 1.75; margin-bottom: 24px; }
+    .feature-list { list-style: none; margin-bottom: 28px; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-mid); padding: 6px 0; border-bottom: 1px solid var(--gray-light); }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list li::before { content: "✓"; color: var(--red); font-weight: 800; font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Quantity + Add to Cart */
+    .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .qty-label { font-size: 14px; font-weight: 700; color: var(--text-mid); }
+    .qty-control { display: flex; align-items: center; border: 2px solid var(--gray-mid); border-radius: 8px; overflow: hidden; }
+    .qty-btn { width: 40px; height: 44px; background: var(--gray-light); border: none; font-size: 20px; font-weight: 700; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: center; color: var(--navy); }
+    .qty-btn:hover { background: var(--gray-mid); }
+    .qty-input { width: 56px; height: 44px; border: none; text-align: center; font-size: 16px; font-weight: 700; font-family: var(--font); color: var(--navy); }
+
+    .btn-add-cart { width: 100%; background: var(--red); color: var(--white); font-weight: 900; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-add-cart:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-add-cart.added { background: #15803d; }
+
+    .btn-buy-now { width: 100%; background: var(--gold); color: var(--navy); font-weight: 900; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; padding: 18px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-bottom: 20px; }
+    .btn-buy-now:hover { background: var(--gold-dark); transform: translateY(-2px); }
+
+    .trust-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .trust-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-light); font-weight: 600; }
+    .trust-badge span { font-size: 18px; }
+
+    /* Entry info box */
+    .entry-info-box { background: linear-gradient(135deg, #001233 0%, #002d6e 100%); border-radius: 10px; padding: 20px; margin-top: 20px; color: var(--white); }
+    .entry-info-box h4 { font-family: var(--font-cond); font-size: 20px; font-weight: 900; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+    .entry-info-box p { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+    .entry-info-box .spin-link { color: var(--gold); font-weight: 700; text-decoration: underline; }
+
+    /* Reviews */
+    .reviews-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+    .reviews-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .reviews-header h2 { font-family: var(--font-cond); font-size: 28px; font-weight: 900; text-transform: uppercase; color: var(--navy); }
+    .overall-rating { display: flex; align-items: center; gap: 16px; }
+    .rating-big { font-size: 56px; font-weight: 900; color: var(--navy); font-family: var(--font-cond); line-height: 1; }
+    .rating-stars-big { color: var(--gold); font-size: 24px; letter-spacing: 3px; }
+    .review-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+    .review-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .reviewer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+    .reviewer-name { font-weight: 700; font-size: 15px; color: var(--text); }
+    .review-date { font-size: 12px; color: var(--text-light); margin-left: auto; }
+    .review-stars { color: var(--gold); font-size: 14px; margin-bottom: 8px; }
+    .review-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .review-body { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+    .verified-badge { font-size: 11px; color: #15803d; font-weight: 700; margin-top: 8px; }
+
+    /* Related products */
+    .related-section { background: var(--gray-light); padding: 48px 24px; }
+    .related-inner { max-width: 1200px; margin: 0 auto; }
+    .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 28px; }
+    .product-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 10px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+    .product-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); transform: translateY(-4px); }
+    .product-img-wrap { aspect-ratio: 1/1; overflow: hidden; background: var(--gray-light); position: relative; }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+    .product-info { padding: 14px 16px 16px; }
+    .product-info h3 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.35; }
+    .product-price { font-size: 16px; font-weight: 800; color: var(--red); margin-bottom: 10px; }
+    .btn-view-product { display: block; width: 100%; background: var(--navy); color: var(--white); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px; border-radius: 4px; text-align: center; transition: background 0.18s; }
+    .btn-view-product:hover { background: var(--red); }
+    .entry-badge-small { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,33,71,0.85); color: var(--gold); font-size: 10px; font-weight: 700; text-align: center; padding: 5px; }
+
+    @media (max-width: 900px) { .product-detail { grid-template-columns: 1fr; } .related-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .related-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a>
+            <a href="shop.html?cat=accessories">Accessories</a>
+            <a href="shop.html?cat=headwear">Headwear</a>
+            <a href="shop.html?cat=members-merch">Members Merch</a>
+            <a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a>
+            <a href="shop.html?cat=health-beauty">Health &amp; Beauty</a>
+            <a href="shop.html?cat=electronics">Electronics</a>
+            <a href="shop.html?cat=tools-diy">Tools &amp; DIY</a>
+            <a href="shop.html?cat=automotive">Automotive</a>
+            <a href="shop.html?cat=outdoor">Outdoor</a>
+            <a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <a href="shop.html">Shop</a> › <a href="shop.html?cat=electronics">Electronics</a> › <span id="breadcrumbProduct">Product</span></div></div>
+
+<!-- PRODUCT DETAIL -->
+<div class="product-detail">
+
+  <!-- Gallery -->
+  <div class="gallery">
+    <div class="gallery-main">
+      <img src="https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=800" alt="Product" id="mainImage" />
+      <div class="entry-overlay" id="entryOverlay">🎟️ 39 Entries With This Purchase</div>
+    </div>
+    <div class="gallery-thumbs" id="galleryThumbs">
+      <div class="thumb active" onclick="setMainImg(this, 'https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=600')">
+        <img src="https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=200" alt="thumb1"/>
+      </div>
+      <div class="thumb" onclick="setMainImg(this, 'https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=600')">
+        <img src="https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=200" alt="thumb2"/>
+      </div>
+      <div class="thumb" onclick="setMainImg(this, 'https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=600')">
+        <img src="https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=200" alt="thumb3"/>
+      </div>
+      <div class="thumb" onclick="setMainImg(this, 'https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=600')">
+        <img src="https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=200" alt="thumb4"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="product-detail-info">
+    <div class="product-detail-category" id="productCategory">Electronics</div>
+    <h1 class="product-detail-title" id="productTitle">11-in-1 Multifunctional Power Strip with Desk Lamp, Clock &amp; USB Ports</h1>
+    <div class="product-rating">
+      <span class="stars">★★★★★</span>
+      <span class="rating-count">4.8 (127 reviews)</span>
+    </div>
+    <div class="product-detail-price" id="productPrice">$39.00</div>
+    <div class="entries-earned"><span class="ticket">🎟️</span> <span id="entriesEarned">39 Entries</span> earned with this purchase</div>
+
+    <div class="divider"></div>
+
+    <p class="product-desc">This all-in-one power strip is the ultimate desk companion. Featuring 11 functions including a built-in LED desk lamp, digital clock, multiple AC outlets, USB-A and USB-C charging ports — all in one compact unit. Perfect for home office, bedroom, or dorm room use.</p>
+
+    <ul class="feature-list">
+      <li>11 built-in functions in one sleek unit</li>
+      <li>Bright LED desk lamp with 3 adjustable color temperatures</li>
+      <li>Digital clock with alarm function</li>
+      <li>4 AC outlets + 3 USB-A + 2 USB-C ports</li>
+      <li>Surge protection up to 1800 Joules</li>
+      <li>5ft braided power cable</li>
+      <li>ETL certified for safety</li>
+    </ul>
+
+    <div class="qty-row">
+      <span class="qty-label">Quantity:</span>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <input class="qty-input" type="number" value="1" min="1" max="99" id="qtyInput" />
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <button class="btn-add-cart" id="addToCartBtn" onclick="addToCart()">
+      🛒 Add to Cart
+    </button>
+    <button class="btn-buy-now" onclick="buyNow()">⚡ Buy Now</button>
+
+    <div class="trust-row">
+      <div class="trust-badge"><span>🚚</span> Free Shipping over $50</div>
+      <div class="trust-badge"><span>↩️</span> 30-Day Returns</div>
+      <div class="trust-badge"><span>🔒</span> Secure Checkout</div>
+    </div>
+
+    <div class="entry-info-box">
+      <h4>🎟️ You'll Earn Sweepstakes Entries!</h4>
+      <p>Every dollar you spend earns 1 entry into our exclusive prize giveaways — including the $1,000,000 SuperPrize! This $39 purchase earns you <strong>39 entries</strong>. Want even more entries? <a href="start.html#spin-the-wheel" class="spin-link">Spin the wheel</a> or <a href="memberships.html" class="spin-link">become a member</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews-section">
+  <div class="reviews-header">
+    <h2>Customer Reviews</h2>
+    <div class="overall-rating">
+      <div class="rating-big">4.8</div>
+      <div>
+        <div class="rating-stars-big">★★★★★</div>
+        <div style="font-size:13px;color:var(--text-light);margin-top:4px">Based on 127 reviews</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="reviewer-avatar">JM</div>
+      <div>
+        <div class="reviewer-name">Jake M.</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <div class="review-date">April 28, 2026</div>
+    </div>
+    <div class="review-title">Exactly what I needed for my desk!</div>
+    <div class="review-body">This power strip is incredible. The lamp is bright enough for late-night work sessions, and the USB-C port charges my laptop fast. Love that I earn sweepstakes entries too — already got 39 from this purchase alone!</div>
+    <div class="verified-badge">✓ Verified Purchase</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="reviewer-avatar" style="background:var(--red)">SR</div>
+      <div>
+        <div class="reviewer-name">Sandra R.</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <div class="review-date">April 21, 2026</div>
+    </div>
+    <div class="review-title">Great product, great value</div>
+    <div class="review-body">Bought this for my home office and it has replaced 3 separate items. The clock alarm works great and the surge protection gives me peace of mind. 5 stars easily.</div>
+    <div class="verified-badge">✓ Verified Purchase</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="reviewer-avatar" style="background:#15803d">DW</div>
+      <div>
+        <div class="reviewer-name">David W.</div>
+        <div class="review-stars">★★★★☆</div>
+      </div>
+      <div class="review-date">April 14, 2026</div>
+    </div>
+    <div class="review-title">Solid build, minor gripe on brightness</div>
+    <div class="review-body">Overall really happy with this. Build quality is solid and the design looks clean on my desk. The lowest lamp brightness setting is still a bit bright for nighttime use — a dimmer range would be nice. Otherwise, perfect.</div>
+    <div class="verified-badge">✓ Verified Purchase</div>
+  </div>
+
+  <button class="btn-outline" style="margin-top:8px" onclick="alert('Load more reviews — connect to backend!')">Load More Reviews</button>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<div class="related-section">
+  <div class="related-inner">
+    <div class="section-header">
+      <h2 class="section-title">You May Also <span>Like</span></h2>
+      <a href="shop.html" class="btn-outline">View All</a>
+    </div>
+    <div class="related-grid">
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=400" alt="Power Strip 12"/>
+          <div class="entry-badge-small">🎟️ 29 Entries</div>
+        </div>
+        <div class="product-info">
+          <h3>12-in-1 Adjustable Desk Lamp Power Strip</h3>
+          <div class="product-price">$29.00</div>
+          <a href="product.html?id=powerstrip12" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/17-in-1-surge-protector-power-cord-5ft-braided-flat-extension-cable-with-6-usb-chargers-2-usb-c-11-ac-power-outlets-batteries-power-accessories-dailysale-516758.webp?v=1773690505&width=400" alt="Surge Protector"/>
+          <div class="entry-badge-small">🎟️ 39 Entries</div>
+        </div>
+        <div class="product-info">
+          <h3>17-in-1 Surge Protector Extension Cord</h3>
+          <div class="product-price">$39.00</div>
+          <a href="product.html?id=surge-protector" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/de28bfa4-c2bd-4634-abb7-e5d56754deb8.jpg?v=1773843926&width=400" alt="Soundbar"/>
+          <div class="entry-badge-small">🎟️ 79 Entries</div>
+        </div>
+        <div class="product-info">
+          <h3>2-in-1 Wireless Soundbar for TV</h3>
+          <div class="product-price">$79.00</div>
+          <a href="product.html?id=soundbar" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <img src="https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=400" alt="Massage Gun"/>
+          <div class="entry-badge-small">🎟️ 80 Entries</div>
+        </div>
+        <div class="product-info">
+          <h3>16-Head Deep Tissue Percussion Massage Gun</h3>
+          <div class="product-price">$80.00</div>
+          <a href="product.html?id=massage-gun" class="btn-view-product">View Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Free Entry Details In Rules.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes. Every dollar spent earns entries into exclusive giveaways.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4>
+      <p>Giveaways are open only to legal residents of the United States, 21 years of age or older. See <a href="official-rules.html">Official Rules</a> for full details.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="contact.html">Contact</a><a href="official-rules.html">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Products data — swap based on URL param ?id=
+  const PRODUCTS = {
+    'hangers':        { title: '10-Pack: Heavy-Duty Plastic Anti-Skid Clothes Hangers', price: '$19.00', entries: 19, category: 'Home & Kitchen', img: 'https://www.pchshopping.com/cdn/shop/files/83b47384-38da-4858-932c-a6262f922322_334cffd0-306e-4e7f-acdf-2d5c3f916c6d.jpg?v=1776104041&width=800' },
+    'socks':          { title: '10-Pack: Soft Comfortable Tube Socks', price: '$29.00', entries: 29, category: 'Apparel', img: 'https://www.pchshopping.com/cdn/shop/files/7048a225-0178-4724-acd9-446f58d60e1b.jpg?v=1774281025&width=800' },
+    'powerstrip11':   { title: '11-in-1 Multifunctional Power Strip with Desk Lamp & Clock', price: '$39.00', entries: 39, category: 'Electronics', img: 'https://www.pchshopping.com/cdn/shop/files/7bb2c391-2768-4f80-b542-885f38fe5914_1.webp?v=1776104401&width=800' },
+    'powerstrip12':   { title: '12-in-1 Adjustable Desk Lamp Power Strip', price: '$29.00', entries: 29, category: 'Electronics', img: 'https://www.pchshopping.com/cdn/shop/files/615dc605-92b8-4251-b7d2-2ff972b6bd00.webp?v=1776104708&width=800' },
+    'grill':          { title: '1500W Smokeless Electric Indoor Grill', price: '$49.00', entries: 49, category: 'Home & Kitchen', img: 'https://www.pchshopping.com/cdn/shop/files/e2f4b3dd-2a3b-412c-a0d9-e2123119ba16.webp?v=1776105190&width=800' },
+    'massage-gun':    { title: '16-Head Deep Tissue Percussion Massage Gun', price: '$80.00', entries: 80, category: 'Health & Beauty', img: 'https://www.pchshopping.com/cdn/shop/files/16-head_massage_gun_main.png?v=1773692524&width=800' },
+    'surge-protector':{ title: '17-in-1 Surge Protector Extension Cord with USB Ports', price: '$39.00', entries: 39, category: 'Electronics', img: 'https://www.pchshopping.com/cdn/shop/files/17-in-1-surge-protector-power-cord-5ft-braided-flat-extension-cable-with-6-usb-chargers-2-usb-c-11-ac-power-outlets-batteries-power-accessories-dailysale-516758.webp?v=1773690505&width=800' },
+    'soundbar':       { title: '2-in-1 Wireless Soundbar for TV', price: '$79.00', entries: 79, category: 'Electronics', img: 'https://www.pchshopping.com/cdn/shop/files/de28bfa4-c2bd-4634-abb7-e5d56754deb8.jpg?v=1773843926&width=800' },
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (id && PRODUCTS[id]) {
+    const p = PRODUCTS[id];
+    document.getElementById('productTitle').textContent = p.title;
+    document.getElementById('productPrice').textContent = p.price;
+    document.getElementById('productCategory').textContent = p.category;
+    document.getElementById('entriesEarned').textContent = p.entries + ' Entries';
+    document.getElementById('entryOverlay').textContent = '🎟️ ' + p.entries + ' Entries With This Purchase';
+    document.getElementById('mainImage').src = p.img;
+    document.getElementById('breadcrumbProduct').textContent = p.title.substring(0, 40) + '…';
+    document.title = p.title + ' – PCH Shopping';
+  }
+
+  // Cart count
+  function getCart() { return JSON.parse(localStorage.getItem('pch_cart') || '[]'); }
+  function saveCart(c) { localStorage.setItem('pch_cart', JSON.stringify(c)); }
+  document.getElementById('cartCount').textContent = getCart().length;
+
+  function changeQty(delta) {
+    const inp = document.getElementById('qtyInput');
+    inp.value = Math.max(1, Math.min(99, parseInt(inp.value || 1) + delta));
+  }
+
+  function addToCart() {
+    const qty = parseInt(document.getElementById('qtyInput').value);
+    const product = id && PRODUCTS[id] ? PRODUCTS[id] : { title: 'Product', price: '$39.00', entries: 39 };
+    const cart = getCart();
+    for (let i = 0; i < qty; i++) cart.push({ id: id || 'product', ...product });
+    saveCart(cart);
+    document.getElementById('cartCount').textContent = cart.length;
+    const btn = document.getElementById('addToCartBtn');
+    btn.textContent = '✓ Added to Cart!';
+    btn.classList.add('added');
+    setTimeout(() => { btn.innerHTML = '🛒 Add to Cart'; btn.classList.remove('added'); }, 2000);
+  }
+
+  function buyNow() { addToCart(); window.location.href = 'cart.html'; }
+
+  function setMainImg(thumb, src) {
+    document.getElementById('mainImage').src = src;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+  }
+</script>
+</body>
+</html>

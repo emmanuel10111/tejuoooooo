@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memberships – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    /* ── TAB TOGGLE ── */
+    .mem-page { background: linear-gradient(160deg,#001233 0%,#002d6e 100%); min-height: 80vh; padding: 60px 24px 80px; }
+    .mem-inner { max-width: 1200px; margin: 0 auto; }
+    .mem-top { text-align: center; margin-bottom: 48px; }
+    .mem-top h1 { font-family: var(--font-cond); font-size: clamp(32px,5vw,60px); font-weight: 900; color: var(--white); text-transform: uppercase; margin-bottom: 12px; }
+    .mem-top h1 span { color: var(--gold); }
+    .mem-top p { font-size: 17px; color: rgba(255,255,255,0.65); max-width: 520px; margin: 0 auto; }
+
+    .tab-toggle { display: flex; justify-content: center; margin-bottom: 44px; }
+    .tab-btn { padding: 13px 36px; font-weight: 700; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.14); cursor: pointer; transition: all 0.2s; font-family: var(--font); }
+    .tab-btn:first-child { border-radius: 6px 0 0 6px; }
+    .tab-btn:last-child { border-radius: 0 6px 6px 0; }
+    .tab-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+
+    /* ── CARDS ── */
+    .mem-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
+    .mem-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 30px 26px; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+    .mem-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(0,0,0,0.35); }
+    .mem-card.gold-card   { border-color: rgba(245,197,24,0.35); }
+    .mem-card.plat-card   { border-color: var(--gold); background: rgba(245,197,24,0.06); }
+    .mem-card.diam-card   { border-color: var(--diamond); background: rgba(167,139,250,0.06); }
+    .card-pill { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; white-space: nowrap; }
+    .pill-rec  { background: var(--gold); color: var(--navy); }
+    .pill-best { background: var(--diamond); color: var(--white); }
+
+    .tier-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+    .tier-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .tier-icon { width: 52px; height: 52px; object-fit: contain; }
+    .tier-name { font-family: var(--font-cond); font-size: 32px; font-weight: 900; color: var(--white); text-transform: uppercase; }
+
+    .tier-entries .big { font-family: var(--font-cond); font-size: 58px; font-weight: 900; color: var(--gold); line-height: 1; }
+    .tier-entries .lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+
+    .tier-price { font-size: 32px; font-weight: 900; color: var(--white); }
+    .tier-price sup { font-size: 18px; vertical-align: super; }
+    .tier-price sub { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.45); }
+    .tier-plan { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; margin-top: 4px; }
+
+    .tier-features { list-style: none; margin-bottom: 28px; }
+    .tier-features li { display: flex; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.72); padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
+    .tier-features li:last-child { border: none; }
+    .tier-features li::before { content: "✓"; color: var(--gold); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+    .tier-features li strong { color: var(--white); }
+
+    .btn-choose { display: block; width: 100%; background: var(--red); color: var(--white); font-weight: 900; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; padding: 15px; border-radius: 8px; border: none; cursor: pointer; transition: background 0.18s, transform 0.15s; font-family: var(--font); }
+    .btn-choose:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .btn-choose.gold-btn { background: var(--gold); color: var(--navy); }
+    .btn-choose.gold-btn:hover { background: var(--gold-dark); }
+
+    /* Reward packs */
+    .reward-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+    .reward-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 26px 20px; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+    .reward-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+    .reward-card.rec-card { border-color: var(--gold); }
+    .reward-card.best-card { border-color: var(--diamond); }
+    .rw-type { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
+    .rw-name { font-family: var(--font-cond); font-size: 22px; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+    .rw-entries { font-family: var(--font-cond); font-size: 44px; font-weight: 900; color: var(--gold); line-height: 1; }
+    .rw-entries-lbl { font-size: 11px; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; margin-bottom: 16px; }
+    .rw-price .was { font-size: 14px; color: rgba(255,255,255,0.35); text-decoration: line-through; }
+    .rw-price .now { font-size: 30px; font-weight: 900; color: var(--white); font-family: var(--font-cond); }
+    .rw-member-price { font-size: 12px; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+    .rw-save { font-size: 12px; color: #86efac; font-weight: 700; margin-bottom: 18px; }
+    .rw-features { list-style: none; margin-bottom: 20px; }
+    .rw-features li { font-size: 12px; color: rgba(255,255,255,0.65); padding: 4px 0; display: flex; gap: 7px; }
+    .rw-features li::before { content: "✓"; color: var(--gold); font-weight: 800; }
+    .btn-buy { display: block; width: 100%; background: var(--red); color: var(--white); font-weight: 800; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; padding: 13px; border-radius: 6px; border: none; cursor: pointer; transition: background 0.18s; font-family: var(--font); }
+    .btn-buy:hover { background: var(--red-dark); }
+
+    /* Comparison table */
+    .compare-section { max-width: 1100px; margin: 80px auto 0; }
+    .compare-section h2 { font-family: var(--font-cond); font-size: 36px; font-weight: 900; text-transform: uppercase; color: var(--white); text-align: center; margin-bottom: 32px; }
+    .compare-section h2 span { color: var(--gold); }
+    .compare-table { width: 100%; border-collapse: collapse; }
+    .compare-table th { background: rgba(255,255,255,0.08); color: var(--white); font-family: var(--font-cond); font-size: 18px; font-weight: 800; text-transform: uppercase; padding: 16px 20px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.1); }
+    .compare-table th:first-child { text-align: left; }
+    .compare-table th.gold-th { color: var(--gold); }
+    .compare-table td { padding: 14px 20px; font-size: 14px; color: rgba(255,255,255,0.7); border-bottom: 1px solid rgba(255,255,255,0.06); text-align: center; }
+    .compare-table td:first-child { text-align: left; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .compare-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .check { color: var(--gold); font-size: 18px; font-weight: 900; }
+    .dash { color: rgba(255,255,255,0.2); }
+
+    /* Trust + signin */
+    .mem-footer { text-align: center; margin-top: 32px; }
+    .mem-footer p { color: rgba(255,255,255,0.45); font-size: 14px; margin-bottom: 8px; }
+    .mem-footer a { color: var(--gold); font-weight: 700; }
+    .trust-row { display: flex; justify-content: center; gap: 36px; margin-top: 24px; flex-wrap: wrap; }
+    .trust-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); font-size: 14px; font-weight: 600; }
+    .trust-item span { font-size: 22px; }
+
+    /* Benefits section */
+    .benefits-section { background: var(--gray-light); padding: 64px 24px; }
+    .benefits-inner { max-width: 1100px; margin: 0 auto; }
+    .benefits-inner h2 { font-family: var(--font-cond); font-size: 36px; font-weight: 900; text-transform: uppercase; color: var(--navy); text-align: center; margin-bottom: 40px; }
+    .benefits-inner h2 span { color: var(--red); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; }
+    .benefit-card { background: var(--white); border-radius: 12px; padding: 28px 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); text-align: center; }
+    .benefit-icon { font-size: 42px; margin-bottom: 14px; }
+    .benefit-card h3 { font-family: var(--font-cond); font-size: 20px; font-weight: 800; text-transform: uppercase; color: var(--navy); margin-bottom: 8px; }
+    .benefit-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
+
+    @media (max-width: 1024px) { .mem-cards { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } .reward-cards { grid-template-columns: repeat(2,1fr); } .benefits-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .reward-cards { grid-template-columns: 1fr; } .compare-table { font-size: 12px; } .compare-table th, .compare-table td { padding: 10px 12px; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Members Earn Up to 20,000 Auto Entries Per Month! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html" class="active">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Memberships</span></div></div>
+
+<div class="mem-page">
+  <div class="mem-inner">
+    <div class="mem-top">
+      <h1>Stack Your Entries. <span>Win Bigger.</span></h1>
+      <p>Choose a membership plan and get thousands of automatic entries every month — plus exclusive discounts and perks.</p>
+    </div>
+
+    <div class="tab-toggle">
+      <button class="tab-btn active" id="tabM" onclick="showTab('monthly')">Monthly Plan</button>
+      <button class="tab-btn" id="tabO" onclick="showTab('onetime')">One Time Purchase</button>
+    </div>
+
+    <!-- MONTHLY -->
+    <div id="panelMonthly">
+      <div class="mem-cards">
+
+        <div class="mem-card gold-card">
+          <div class="tier-eyebrow">Monthly Plan</div>
+          <div class="tier-header">
+            <img class="tier-icon" src="https://www.pchshopping.com/cdn/shop/files/gold-2.png?v=1773858230&width=128" alt="Gold"/>
+            <div class="tier-name">Gold</div>
+          </div>
+          <div class="tier-entries">
+            <div class="big">2,000</div>
+            <div class="lbl">Auto Entries / Month</div>
+          </div>
+          <div class="tier-price"><sup>$</sup>25<sub>/month</sub></div>
+          <div class="tier-plan">Monthly Plan — Cancel Anytime</div>
+          <ul class="tier-features">
+            <li><strong>2,000</strong> automatic monthly entries</li>
+            <li><strong>10×</strong> entry multiplier for Weekly Grand Prizes</li>
+            <li><strong>4×</strong> entry multiplier on Members-Only Merch</li>
+            <li><strong>10%</strong> discount on branded merch</li>
+            <li><strong>50%</strong> off Reward Packs</li>
+            <li><strong>3%</strong> of proceeds supports charity</li>
+            <li>PCH CashBack platform access</li>
+          </ul>
+          <button class="btn-choose" onclick="choosePlan('Gold Monthly','$25/month')">Choose Plan</button>
+        </div>
+
+        <div class="mem-card plat-card">
+          <div class="card-pill pill-rec">⭐ Recommended</div>
+          <div class="tier-eyebrow">Monthly Plan</div>
+          <div class="tier-header">
+            <img class="tier-icon" src="https://www.pchshopping.com/cdn/shop/files/platinum-2.png?v=1773858414&width=128" alt="Platinum"/>
+            <div class="tier-name">Platinum</div>
+          </div>
+          <div class="tier-entries">
+            <div class="big">6,000</div>
+            <div class="lbl">Auto Entries / Month</div>
+          </div>
+          <div class="tier-price"><sup>$</sup>60<sub>/month</sub></div>
+          <div class="tier-plan">Monthly Plan — Cancel Anytime</div>
+          <ul class="tier-features">
+            <li><strong>6,000</strong> automatic monthly entries</li>
+            <li><strong>10×</strong> entry multiplier for Weekly Grand Prizes</li>
+            <li><strong>4×</strong> entry multiplier on Members-Only Merch</li>
+            <li><strong>15%</strong> discount on branded merch</li>
+            <li><strong>50%</strong> off Reward Packs</li>
+            <li><strong>3%</strong> of proceeds supports charity</li>
+            <li>PCH CashBack platform access</li>
+            <li>Welcome Gift included</li>
+          </ul>
+          <button class="btn-choose gold-btn" onclick="choosePlan('Platinum Monthly','$60/month')">Choose Plan</button>
+        </div>
+
+        <div class="mem-card diam-card">
+          <div class="card-pill pill-best">💎 Best Value</div>
+          <div class="tier-eyebrow">Monthly Plan</div>
+          <div class="tier-header">
+            <img class="tier-icon" src="https://www.pchshopping.com/cdn/shop/files/diamond-2.png?v=1773858846&width=128" alt="Diamond"/>
+            <div class="tier-name">Diamond</div>
+          </div>
+          <div class="tier-entries">
+            <div class="big">20,000</div>
+            <div class="lbl">Auto Entries / Month</div>
+          </div>
+          <div class="tier-price"><sup>$</sup>150<sub>/month</sub></div>
+          <div class="tier-plan">Monthly Plan — Cancel Anytime</div>
+          <ul class="tier-features">
+            <li><strong>20,000</strong> automatic monthly entries</li>
+            <li><strong>10×</strong> entry multiplier for Weekly Grand Prizes</li>
+            <li><strong>4×</strong> entry multiplier on Members-Only Merch</li>
+            <li><strong>20%</strong> discount on branded merch</li>
+            <li><strong>50%</strong> off Reward Packs</li>
+            <li><strong>3%</strong> of proceeds supports charity</li>
+            <li>PCH CashBack platform access</li>
+            <li>Welcome Gift + Exclusive Members Content</li>
+          </ul>
+          <button class="btn-choose" onclick="choosePlan('Diamond Monthly','$150/month')">Choose Plan</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ONE-TIME REWARD PACKS -->
+    <div id="panelOnetime" style="display:none">
+      <div class="reward-cards">
+
+        <div class="reward-card">
+          <div class="rw-type">One Time Purchase</div>
+          <div class="rw-name">Reward Pack #1</div>
+          <div class="rw-entries">500</div>
+          <div class="rw-entries-lbl">Entries</div>
+          <div class="rw-price"><span class="was">$20</span><br/><span class="now">$20</span></div>
+          <div class="rw-member-price">Members pay only $10</div>
+          <div class="rw-save">Save 50% as a member!</div>
+          <ul class="rw-features">
+            <li>500 entries into all active giveaways</li>
+            <li>10× Weekly Grand Prize multiplier</li>
+            <li>1 exclusive digital wallpaper</li>
+            <li>PCH CashBack access</li>
+          </ul>
+          <button class="btn-buy" onclick="choosePlan('Reward Pack #1','$20')">Buy Now</button>
+        </div>
+
+        <div class="reward-card">
+          <div class="rw-type">One Time Purchase</div>
+          <div class="rw-name">Reward Pack #2</div>
+          <div class="rw-entries">2,000</div>
+          <div class="rw-entries-lbl">Entries</div>
+          <div class="rw-price"><span class="was">$50</span><br/><span class="now">$50</span></div>
+          <div class="rw-member-price">Members pay only $25</div>
+          <div class="rw-save">Save 50% as a member!</div>
+          <ul class="rw-features">
+            <li>2,000 entries into all active giveaways</li>
+            <li>10× Weekly Grand Prize multiplier</li>
+            <li>3 exclusive digital wallpapers</li>
+            <li>PCH CashBack access</li>
+          </ul>
+          <button class="btn-buy" onclick="choosePlan('Reward Pack #2','$50')">Buy Now</button>
+        </div>
+
+        <div class="reward-card rec-card">
+          <div class="card-pill pill-rec" style="top:-12px">⭐ Recommended</div>
+          <div class="rw-type">One Time Purchase</div>
+          <div class="rw-name">Reward Pack #3</div>
+          <div class="rw-entries">6,000</div>
+          <div class="rw-entries-lbl">Entries</div>
+          <div class="rw-price"><span class="was">$120</span><br/><span class="now">$120</span></div>
+          <div class="rw-member-price">Members pay only $60</div>
+          <div class="rw-save">Save 50% as a member!</div>
+          <ul class="rw-features">
+            <li>6,000 entries into all active giveaways</li>
+            <li>10× Weekly Grand Prize multiplier</li>
+            <li>6 exclusive digital wallpapers</li>
+            <li>PCH CashBack access</li>
+          </ul>
+          <button class="btn-buy" onclick="choosePlan('Reward Pack #3','$120')">Buy Now</button>
+        </div>
+
+        <div class="reward-card best-card">
+          <div class="card-pill pill-best" style="top:-12px">💎 Best Value</div>
+          <div class="rw-type">One Time Purchase</div>
+          <div class="rw-name">Reward Pack #4</div>
+          <div class="rw-entries">20,000</div>
+          <div class="rw-entries-lbl">Entries</div>
+          <div class="rw-price"><span class="was">$300</span><br/><span class="now">$300</span></div>
+          <div class="rw-member-price">Members pay only $150</div>
+          <div class="rw-save">Save 50% as a member!</div>
+          <ul class="rw-features">
+            <li>20,000 entries into all active giveaways</li>
+            <li>10× Weekly Grand Prize multiplier</li>
+            <li>10 exclusive digital wallpapers</li>
+            <li>PCH CashBack access + priority support</li>
+          </ul>
+          <button class="btn-buy" onclick="choosePlan('Reward Pack #4','$300')">Buy Now</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mem-footer">
+      <p><a href="login.html">Already a member? Sign in.</a></p>
+      <div class="trust-row">
+        <div class="trust-item"><span>🔒</span> Secure Payment</div>
+        <div class="trust-item"><span>↩️</span> Cancel Anytime</div>
+        <div class="trust-item"><span>🎟️</span> Instant Entry</div>
+        <div class="trust-item"><span>💳</span> No Hidden Fees</div>
+      </div>
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div class="compare-section">
+      <h2>Compare <span>All Plans</span></h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th class="gold-th">Gold</th>
+            <th class="gold-th">Platinum</th>
+            <th class="gold-th">Diamond</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Monthly Auto Entries</td><td class="dash">—</td><td>2,000</td><td>6,000</td><td>20,000</td></tr>
+          <tr><td>Weekly Grand Prize Multiplier</td><td class="dash">1×</td><td>10×</td><td>10×</td><td>10×</td></tr>
+          <tr><td>Member Merch Multiplier</td><td class="dash">—</td><td>4×</td><td>4×</td><td>4×</td></tr>
+          <tr><td>Merch Discount</td><td class="dash">—</td><td>10%</td><td>15%</td><td>20%</td></tr>
+          <tr><td>Reward Pack Discount</td><td class="dash">—</td><td class="check">50%</td><td class="check">50%</td><td class="check">50%</td></tr>
+          <tr><td>PCH CashBack Access</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Charity Contribution</td><td class="dash">—</td><td class="check">3%</td><td class="check">3%</td><td class="check">3%</td></tr>
+          <tr><td>Welcome Gift</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Exclusive Members Content</td><td class="dash">—</td><td class="dash">—</td><td class="dash">—</td><td class="check">✓</td></tr>
+          <tr><td>Spin &amp; Win Daily Prize Wheel</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<div class="benefits-section">
+  <div class="benefits-inner">
+    <h2>Why <span>Join PCH Shopping?</span></h2>
+    <div class="benefits-grid">
+      <div class="benefit-card"><div class="benefit-icon">🏆</div><h3>Real Winners Every Week</h3><p>PCH has awarded over $492 million in prizes to real people across the US. Every week, real winners are announced — and you could be next.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">🎟️</div><h3>Entries Stack Automatically</h3><p>Your monthly membership entries are added automatically. Shop products, spin the wheel, and buy reward packs to multiply your chances even further.</p></div>
+      <div class="benefit-card"><div class="benefit-icon">💰</div><h3>Save on Great Products</h3><p>Members get exclusive discounts on all branded merchandise and 50% off reward packs. Your membership pays for itself while you enter to win.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Free Entry Details In <a href="official-rules.html">Official Rules</a>.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes. Every dollar spent earns entries into exclusive giveaways.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4>
+      <p>Giveaways open to US residents 21+. See <a href="official-rules.html">Official Rules</a> for full details.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('cartCount').textContent = JSON.parse(localStorage.getItem('pch_cart') || '[]').length;
+
+  function showTab(tab) {
+    const isM = tab === 'monthly';
+    document.getElementById('tabM').classList.toggle('active', isM);
+    document.getElementById('tabO').classList.toggle('active', !isM);
+    document.getElementById('panelMonthly').style.display = isM ? '' : 'none';
+    document.getElementById('panelOnetime').style.display = isM ? 'none' : '';
+  }
+
+  function choosePlan(name, price) {
+    alert(`✅ You selected: ${name} (${price})\n\nIn a full deployment this would proceed to secure checkout.\n\nThank you for choosing PCH Shopping!`);
+  }
+</script>
+</body>
+</html>

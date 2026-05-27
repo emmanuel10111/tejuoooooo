@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Win The $1,000,000 SuperPrize – PCH Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="shared.css"/>
+<style>
+/* Hero */
+.gwy-hero {position:relative;overflow:hidden;background:var(--navy);min-height:520px;display:flex;align-items:flex-end;}
+.gwy-hero-img {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.gwy-hero-overlay {position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.3) 60%,transparent 100%);}
+.gwy-hero-content {position:relative;z-index:2;padding:60px 48px 56px;max-width:680px;}
+.gwy-badge {display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:16px;}
+.gwy-badge.exclusive {background:var(--gold);color:var(--navy);}
+.gwy-badge.weekly {background:#1d4ed8;color:#fff;}
+.gwy-hero-title {font-family:var(--font-cond);font-size:clamp(32px,5vw,64px);font-weight:900;color:#fff;text-transform:uppercase;line-height:1.05;margin-bottom:10px;text-shadow:0 2px 12px rgba(0,0,0,0.4);}
+.gwy-hero-or {font-size:20px;color:var(--gold);font-weight:700;margin-bottom:6px;}
+.gwy-hero-ends {font-size:14px;color:rgba(255,255,255,0.65);font-weight:500;margin-bottom:28px;}
+.gwy-gwy {font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:20px;letter-spacing:.08em;}
+/* Countdown */
+.gwy-countdown {display:flex;gap:12px;margin-bottom:28px;}
+.gwy-cd-block {background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px 16px;text-align:center;min-width:64px;}
+.gwy-cd-num {font-family:var(--font-cond);font-size:36px;font-weight:900;color:var(--gold);line-height:1;}
+.gwy-cd-lbl {font-size:10px;color:rgba(255,255,255,0.45);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.btn-enter-big {display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;font-weight:900;font-size:18px;letter-spacing:.06em;text-transform:uppercase;padding:18px 40px;border-radius:8px;border:none;cursor:pointer;transition:background .2s,transform .15s;box-shadow:0 6px 24px rgba(200,16,46,0.4);font-family:var(--font);}
+.btn-enter-big:hover {background:var(--red-dark);transform:translateY(-2px);}
+
+/* Main layout */
+.gwy-layout {max-width:1200px;margin:0 auto;padding:56px 24px;display:grid;grid-template-columns:1fr 340px;gap:48px;align-items:start;}
+
+/* Left: details */
+.gwy-details {}
+.gwy-section-title {font-family:var(--font-cond);font-size:28px;font-weight:900;text-transform:uppercase;color:var(--navy);margin-bottom:16px;}
+.gwy-section-title span {color:var(--red);}
+.gwy-desc {font-size:16px;color:var(--text-mid);line-height:1.75;margin-bottom:32px;}
+.gwy-highlights {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;}
+.gwy-highlight {background:var(--gray-light);border-radius:10px;padding:20px;border-left:4px solid #f5c518;}
+.gwy-highlight .h-icon {font-size:28px;margin-bottom:8px;}
+.gwy-highlight .h-label {font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:4px;}
+.gwy-highlight .h-val {font-family:var(--font-cond);font-size:22px;font-weight:900;color:var(--navy);}
+/* How to enter */
+.how-steps {display:flex;flex-direction:column;gap:16px;margin-bottom:36px;}
+.how-step {display:flex;gap:16px;align-items:flex-start;padding:18px 20px;background:#fff;border:1px solid var(--gray-mid);border-radius:10px;}
+.how-num {width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--font-cond);font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.how-step h3 {font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.how-step p {font-size:14px;color:var(--text-light);line-height:1.5;}
+/* Odds */
+.odds-box {background:var(--gray-light);border-radius:10px;padding:20px 24px;margin-bottom:28px;font-size:13px;color:var(--text-light);line-height:1.65;}
+.odds-box h4 {font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;}
+
+/* Right: entry sidebar */
+.gwy-sidebar {position:sticky;top:80px;}
+.entry-card {background:#fff;border:2px solid var(--gold);border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.entry-card-top {background:linear-gradient(135deg,#001233,#002d6e);padding:22px 22px 18px;text-align:center;}
+.entry-card-top h3 {font-family:var(--font-cond);font-size:22px;font-weight:900;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.entry-card-top p {font-size:13px;color:rgba(255,255,255,0.6);}
+.entry-card-body {padding:20px;}
+.entry-option {display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:8px;border:1.5px solid var(--gray-mid);margin-bottom:10px;cursor:pointer;transition:all .18s;}
+.entry-option:hover,.entry-option.selected {border-color:var(--gold);background:rgba(245,197,24,0.05);}
+.entry-option .eo-left h4 {font-size:14px;font-weight:700;color:var(--navy);}
+.entry-option .eo-left p {font-size:12px;color:var(--text-light);}
+.entry-option .eo-entries {font-family:var(--font-cond);font-size:20px;font-weight:900;color:var(--gold);}
+.btn-sidebar-enter {display:block;width:100%;background:var(--red);color:#fff;font-weight:900;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:15px;border-radius:8px;border:none;cursor:pointer;transition:background .2s,transform .15s;font-family:var(--font);text-align:center;margin-bottom:10px;}
+.btn-sidebar-enter:hover {background:var(--red-dark);transform:translateY(-1px);}
+.btn-sidebar-spin {display:block;width:100%;background:var(--gold);color:var(--navy);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:13px;border-radius:8px;border:none;cursor:pointer;transition:background .2s;font-family:var(--font);text-align:center;}
+.btn-sidebar-spin:hover {background:var(--gold-dark);}
+.sidebar-divider {height:1px;background:var(--gray-mid);margin:14px 0;}
+.free-entry-note {font-size:12px;color:var(--text-light);text-align:center;line-height:1.6;}
+.free-entry-note a {color:var(--red);text-decoration:underline;}
+.entry-total {display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(0,33,71,.06);border-radius:8px;padding:10px;margin-bottom:14px;font-size:13px;font-weight:700;color:var(--navy);}
+.entry-total .et-num {font-family:var(--font-cond);font-size:22px;font-weight:900;color:var(--red);}
+
+/* Other giveaways */
+.other-giveaways {max-width:1200px;margin:0 auto;padding:0 24px 60px;}
+.other-giveaways h2 {font-family:var(--font-cond);font-size:28px;font-weight:900;text-transform:uppercase;color:var(--navy);margin-bottom:24px;}
+.other-giveaways h2 span {color:var(--red);}
+.other-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.other-card {border-radius:12px;overflow:hidden;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.1);transition:transform .2s,box-shadow .2s;}
+.other-card:hover {transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,0.18);}
+.other-card img {width:100%;height:180px;object-fit:cover;display:block;}
+.other-card-overlay {position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,transparent 60%);display:flex;flex-direction:column;justify-content:flex-end;padding:18px;}
+.other-card-overlay h3 {font-family:var(--font-cond);font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;margin-bottom:4px;}
+.other-card-overlay p {font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:10px;}
+.btn-other-enter {display:inline-block;background:var(--red);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:7px 16px;border-radius:5px;}
+
+@media(max-width:900px){.gwy-layout{grid-template-columns:1fr;}.gwy-sidebar{position:static;}.other-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:580px){.gwy-hero-content{padding:40px 24px 40px;}.gwy-highlights{grid-template-columns:1fr;}.other-grid{grid-template-columns:1fr;}.gwy-countdown{gap:8px;}}
+</style>
+</head>
+<body>
+
+<div class="announcement-bar">🎟️ Every $1 Spent = 1 Entry to Win! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col"><h4>Branded Merch</h4><a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Products</h4><a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a></div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <a href="shop.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></a>
+      <a href="login.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <a href="giveaways.html">Giveaways</a> › <span>Win The $1,000,000 SuperPrize</span></div></div>
+
+<!-- HERO -->
+<section class="gwy-hero">
+  <img class="gwy-hero-img" src="https://www.pchshopping.com/cdn/shop/files/1MM_carousel_img_02.jpg?v=1774552267&width=1800" alt="Win The $1,000,000 SuperPrize"/>
+  <div class="gwy-hero-overlay"></div>
+  <div class="gwy-hero-content">
+    <div class="gwy-badge exclusive">⭐ Exclusive Prize</div>
+    <h1 class="gwy-hero-title">Win The $1,000,000 SuperPrize</h1>
+    <p class="gwy-hero-or">Or $5,000/week for life — Winner's Choice!</p>
+    <p class="gwy-hero-ends">📅 Entry Deadline: May 31, 2026</p>
+    <p class="gwy-gwy">GWY #22915</p>
+    <div class="gwy-countdown" id="countdown">
+      <div class="gwy-cd-block"><div class="gwy-cd-num" id="cd-d">00</div><div class="gwy-cd-lbl">Days</div></div>
+      <div class="gwy-cd-block"><div class="gwy-cd-num" id="cd-h">00</div><div class="gwy-cd-lbl">Hours</div></div>
+      <div class="gwy-cd-block"><div class="gwy-cd-num" id="cd-m">00</div><div class="gwy-cd-lbl">Mins</div></div>
+      <div class="gwy-cd-block"><div class="gwy-cd-num" id="cd-s">00</div><div class="gwy-cd-lbl">Secs</div></div>
+    </div>
+    <button class="btn-enter-big" onclick="enterNow()">🎟️ Enter to Win Now!</button>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="gwy-layout">
+
+  <!-- LEFT -->
+  <div class="gwy-details">
+    <h2 class="gwy-section-title">About This <span>Giveaway</span></h2>
+    <p class="gwy-desc">This is the big one — the PCH Shopping $1,000,000 SuperPrize. One lucky winner will receive one million dollars, paid as $5,000 every week for life, or as a lump-sum cash alternative. This is your chance to change everything. Shop any PCH Shopping product to earn entries automatically — every $1 spent = 1 entry. Members earn up to 20,000 automatic entries per month.</p>
+
+    <div class="gwy-highlights">
+      <div class="gwy-highlight">
+        <div class="h-icon">💰</div>
+        <div class="h-label">Grand Prize Value</div>
+        <div class="h-val">$1,000,000</div>
+      </div>
+      <div class="gwy-highlight">
+        <div class="h-icon">📅</div>
+        <div class="h-label">Entry Deadline</div>
+        <div class="h-val">May 31, 2026</div>
+      </div>
+      <div class="gwy-highlight">
+        <div class="h-icon">🎟️</div>
+        <div class="h-label">Entries Per $1 Spent</div>
+        <div class="h-val">1 Entry</div>
+      </div>
+      <div class="gwy-highlight">
+        <div class="h-icon">🏆</div>
+        <div class="h-label">Number of Winners</div>
+        <div class="h-val">1 Grand Prize</div>
+      </div>
+    </div>
+
+    <h2 class="gwy-section-title">How To <span>Enter</span></h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div>
+          <h3>Shop Any PCH Shopping Product</h3>
+          <p>Every $1 you spend earns 1 automatic sweepstakes entry. The more you shop, the more entries you earn.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div>
+          <h3>Become a Member for Massive Entry Boosts</h3>
+          <p>Gold, Platinum, and Diamond members receive up to 20,000 automatic entries every month — plus 10× multipliers on Weekly Grand Prizes.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div>
+          <h3>Spin the Daily Prize Wheel</h3>
+          <p>Get one free spin every day on our Spin & Win wheel for a chance at bonus cash prizes from$200,000 to $1,000,000.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">4</div>
+        <div>
+          <h3>Enter For Free By Mail</h3>
+          <p>No purchase necessary. See the Official Rules for free entry instructions via mail. A purchase does not improve your odds of winning.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="odds-box">
+      <h4>About Your Odds</h4>
+      <p>Odds of winning depend on the total number of eligible entries received. All eligible entries have an equal chance of winning the Grand Prize. See the <a href="official-rules.html" style="color:var(--red)">Official Rules</a> for complete details, eligibility requirements, and free entry instructions. Void where prohibited.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="gwy-sidebar">
+    <div class="entry-card">
+      <div class="entry-card-top">
+        <h3>🎟️ Enter to Win</h3>
+        <p>Choose how you want to earn entries</p>
+      </div>
+      <div class="entry-card-body">
+        <div class="entry-option selected" onclick="selectOption(this,'shop')">
+          <div class="eo-left"><h4>🛒 Shop &amp; Earn</h4><p>1 entry per $1 spent</p></div>
+          <div class="eo-entries">1/$ →</div>
+        </div>
+        <div class="entry-option" onclick="selectOption(this,'member')">
+          <div class="eo-left"><h4>💎 Membership</h4><p>Up to 20,000 auto entries/mo</p></div>
+          <div class="eo-entries">20K →</div>
+        </div>
+        <div class="entry-option" onclick="selectOption(this,'spin')">
+          <div class="eo-left"><h4>🎡 Spin &amp; Win</h4><p>Free daily spin — $2K–$1M</p></div>
+          <div class="eo-entries">FREE</div>
+        </div>
+
+        <div class="entry-total">
+          <div>Your current entries:</div>
+          <div class="et-num" id="entryCount">0</div>
+        </div>
+
+        <button class="btn-sidebar-enter" onclick="enterNow()">🎟️ Enter Now — Shop Products</button>
+        <button class="btn-sidebar-spin" onclick="window.location.href='start.html#spin-the-wheel'">🎡 Daily Spin Wheel</button>
+
+        <div class="sidebar-divider"></div>
+        <p class="free-entry-note">No purchase necessary. See <a href="official-rules.html">Official Rules</a> for free mail-in entry details. Void where prohibited.</p>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- OTHER GIVEAWAYS -->
+<div class="other-giveaways">
+  <h2>More <span>Giveaways</span></h2>
+  <div class="other-grid">
+    <div class="other-card"><img src="https://www.pchshopping.com/cdn/shop/files/1MM_carousel_img_02.jpg?v=1774552267&width=600" alt="$1M"/><div class="other-card-overlay"><h3>$1,000,000 SuperPrize</h3><p>Ends May 31, 2026</p><a href="giveaway-1million.html" class="btn-other-enter">Enter →</a></div></div>
+    <div class="other-card"><img src="https://www.pchshopping.com/cdn/shop/files/JeepWagoneer_carousel_img.jpg?v=1774967535&width=600" alt="Jeep"/><div class="other-card-overlay"><h3>Jeep® Wagoneer + $10K</h3><p>Ends May 16, 2026</p><a href="giveaway-jeep.html" class="btn-other-enter">Enter →</a></div></div>
+    <div class="other-card"><img src="https://www.pchshopping.com/cdn/shop/files/wk19_SubaruOutback-hero.jpg?v=1773350523&width=600" alt="Subaru"/><div class="other-card-overlay"><h3>Subaru® Outback</h3><p>Ends May 7, 2026</p><a href="giveaway-subaru.html" class="btn-other-enter">Enter →</a></div></div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Open to US residents 21+. See <a href="official-rules.html">Official Rules</a>.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/><p>PCH Shopping — America's favourite sweepstakes. Shop great products and enter for a chance to win life-changing prizes.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a></div>
+      <div class="footer-col"><h4>More Info</h4><a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div>
+    </div>
+    <div class="footer-legal"><h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4><p>Open to US residents 21+. See <a href="official-rules.html">Official Rules</a> for complete eligibility and free entry instructions. GWY #22915.</p></div>
+    <div class="footer-bottom"><p>© 2026 PCH Shopping. All rights reserved.</p><div class="footer-policy-links"><a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a><a href="contact.html">Contact</a></div></div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('cartCount').textContent = JSON.parse(localStorage.getItem('pch_cart') || '[]').length;
+
+  // Countdown timer
+  function tick() {
+    const now = new Date(), end = new Date('2026-05-31T23:59:59');
+    const diff = Math.max(0, end - now);
+    document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Entry count from cart
+  function refreshEntries() {
+    const cart = JSON.parse(localStorage.getItem('pch_cart') || '[]');
+    const total = cart.reduce((s,i) => s + (parseFloat((i.price||'$0').replace('$',''))||0), 0);
+    document.getElementById('entryCount').textContent = Math.floor(total).toLocaleString();
+  }
+  refreshEntries();
+
+  // Option select
+  function selectOption(el, type) {
+    document.querySelectorAll('.entry-option').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function enterNow() {
+    const btn = document.querySelector('.btn-sidebar-enter');
+    btn.textContent = '✓ Taking You to Shop...';
+    btn.style.background = '#15803d';
+    setTimeout(() => { window.location.href = 'shop.html'; }, 600);
+  }
+</script>
+</body>
+</html>

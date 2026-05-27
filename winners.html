@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Winners Circle – PCH Shopping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    /* Stats hero */
+    .winners-hero { background: linear-gradient(160deg,#001233 0%,#002d6e 100%); padding: 64px 24px; text-align: center; color: var(--white); }
+    .winners-hero h1 { font-family: var(--font-cond); font-size: clamp(36px,5vw,64px); font-weight: 900; text-transform: uppercase; margin-bottom: 14px; }
+    .winners-hero h1 span { color: var(--gold); }
+    .winners-hero p { font-size: 17px; color: rgba(255,255,255,0.65); max-width: 540px; margin: 0 auto 48px; }
+    .stats-row { display: flex; justify-content: center; gap: 0; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+    .stat-block { flex: 1; min-width: 180px; padding: 24px 16px; border-right: 1px solid rgba(255,255,255,0.12); text-align: center; }
+    .stat-block:last-child { border-right: none; }
+    .stat-num { font-family: var(--font-cond); font-size: clamp(32px,4vw,52px); font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 6px; }
+    .stat-lbl { font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 600; max-width: 140px; margin: 0 auto; }
+
+    /* Filter bar */
+    .filter-bar { background: var(--gray-light); border-bottom: 1px solid var(--gray-mid); padding: 16px 24px; }
+    .filter-bar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .filter-label { font-size: 13px; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.06em; }
+    .filter-select { padding: 9px 16px; border: 1px solid var(--gray-mid); border-radius: 6px; font-size: 14px; font-family: var(--font); color: var(--text); background: var(--white); cursor: pointer; }
+    .filter-search { flex: 1; min-width: 200px; padding: 9px 16px; border: 1px solid var(--gray-mid); border-radius: 6px; font-size: 14px; font-family: var(--font); }
+    .btn-search { background: var(--navy); color: var(--white); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; transition: background 0.18s; }
+    .btn-search:hover { background: var(--red); }
+
+    /* Winners grid */
+    .winners-section { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+    .winners-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .winner-card { background: var(--white); border: 1px solid var(--gray-mid); border-radius: 14px; overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+    .winner-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-4px); }
+    .winner-card.big-winner { border-color: var(--gold); border-width: 2px; }
+
+    .winner-card-top { padding: 22px 22px 0; display: flex; align-items: center; gap: 14px; }
+    .winner-avatar { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-cond); font-size: 22px; font-weight: 900; color: var(--white); flex-shrink: 0; }
+    .winner-info { flex: 1; }
+    .winner-name { font-weight: 800; font-size: 16px; color: var(--navy); }
+    .winner-location { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+    .winner-prize-badge { background: var(--navy); color: var(--gold); font-family: var(--font-cond); font-size: 20px; font-weight: 900; padding: 6px 14px; border-radius: 8px; white-space: nowrap; }
+    .winner-card.big-winner .winner-prize-badge { background: var(--gold); color: var(--navy); }
+
+    .winner-card-body { padding: 16px 22px 22px; }
+    .winner-prize-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .winner-date { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
+    .winner-quote { font-size: 13px; color: var(--text-mid); line-height: 1.6; font-style: italic; border-left: 3px solid var(--gold); padding-left: 12px; }
+
+    /* Big winner spotlight */
+    .spotlight { background: linear-gradient(135deg,#001233 0%,#002d6e 100%); border-radius: 16px; padding: 40px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .spotlight-badge { display: inline-block; background: var(--gold); color: var(--navy); font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 14px; }
+    .spotlight h2 { font-family: var(--font-cond); font-size: 44px; font-weight: 900; color: var(--white); text-transform: uppercase; line-height: 1.05; margin-bottom: 10px; }
+    .spotlight h2 span { color: var(--gold); }
+    .spotlight-winner { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+    .spotlight-location { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 20px; }
+    .spotlight-quote { font-size: 16px; color: rgba(255,255,255,0.75); font-style: italic; line-height: 1.65; border-left: 4px solid var(--gold); padding-left: 18px; }
+    .spotlight-img { border-radius: 12px; overflow: hidden; }
+    .spotlight-img img { width: 100%; height: 320px; object-fit: cover; border-radius: 12px; }
+
+    /* Load more */
+    .load-more-wrap { text-align: center; margin-top: 48px; }
+
+    /* Hall of fame */
+    .hof-section { background: var(--gray-light); padding: 60px 24px; }
+    .hof-inner { max-width: 1100px; margin: 0 auto; }
+    .hof-inner h2 { font-family: var(--font-cond); font-size: 36px; font-weight: 900; text-transform: uppercase; color: var(--navy); text-align: center; margin-bottom: 8px; }
+    .hof-inner h2 span { color: var(--red); }
+    .hof-subtitle { text-align: center; font-size: 15px; color: var(--text-light); margin-bottom: 40px; }
+    .hof-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .hof-card { background: var(--white); border-radius: 12px; padding: 24px 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-top: 4px solid var(--gold); }
+    .hof-amount { font-family: var(--font-cond); font-size: 32px; font-weight: 900; color: var(--navy); margin-bottom: 4px; }
+    .hof-name { font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 2px; }
+    .hof-detail { font-size: 13px; color: var(--text-light); }
+
+    @media (max-width: 1024px) { .winners-grid { grid-template-columns: repeat(2, 1fr); } .hof-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .spotlight { grid-template-columns: 1fr; } .spotlight-img { display: none; } .stats-row { gap: 0; } }
+    @media (max-width: 540px) { .winners-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar">🏆 Over $492 Million Awarded — You Could Be Next! &nbsp;|&nbsp; <a href="start.html#spin-the-wheel">🎡 Spin to Win$200,000+</a></div>
+
+<header>
+  <div class="header-inner">
+    <nav class="nav-left">
+      <div class="nav-item">
+        <button class="nav-btn">SHOP <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown">
+          <div class="dropdown-col">
+            <h4>Branded Merch</h4>
+            <a href="shop.html?cat=apparel">Apparel</a><a href="shop.html?cat=accessories">Accessories</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col">
+            <h4>Products</h4>
+            <a href="shop.html?cat=home-kitchen">Home &amp; Kitchen</a><a href="shop.html?cat=electronics">Electronics</a><a href="shop.html" class="view-all">View All →</a>
+          </div>
+          <div class="dropdown-col"><h4>Browse</h4><a href="shop.html" class="view-all" style="color:var(--red);font-size:16px">Shop All</a></div>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn">GIVEAWAYS <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z" fill="white"/></svg></button>
+        <div class="dropdown giveaways-dd">
+          <a href="giveaway-1million.html">Exclusive – $1,000,000 SuperPrize</a>
+          <a href="giveaway-jeep.html">Exclusive – Jeep® Wagoneer</a>
+          <a href="giveaway-bmw.html">Exclusive – BMW 230i</a>
+          <a href="giveaway-subaru.html">Weekly Grand Prize – Subaru® Outback</a>
+          <a href="giveaways.html" style="color:var(--red);font-weight:800;margin-top:8px">View All →</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="memberships.html">MEMBERSHIPS</a></div>
+      <div class="nav-item"><a href="winners.html" class="active">WINNERS CIRCLE</a></div>
+    </nav>
+    <div class="logo-wrap"><a href="start.html"><img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/></a></div>
+    <div class="nav-right">
+      <a href="memberships.html" class="btn-member">Become a Member</a>
+      <a href="cart.html">CashBack</a>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg></button>
+      <button class="icon-btn"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      <a href="cart.html" class="icon-btn"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span class="cart-badge" id="cartCount">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="breadcrumb"><div class="breadcrumb-inner"><a href="start.html">Home</a> › <span>Winners Circle</span></div></div>
+
+<!-- HERO -->
+<div class="winners-hero">
+  <h1>The <span>Winners Circle</span></h1>
+  <p>Real people. Real prizes. Life-changing wins — happening every single week across America.</p>
+  <div class="stats-row">
+    <div class="stat-block"><div class="stat-num">$492M+</div><div class="stat-lbl">In Prizes Awarded By PCH</div></div>
+    <div class="stat-block"><div class="stat-num">10.6M+</div><div class="stat-lbl">Total Prizes Awarded To Date</div></div>
+    <div class="stat-block"><div class="stat-num">135+</div><div class="stat-lbl">Millionaire-Making Prizes</div></div>
+    <div class="stat-block"><div class="stat-num">50+</div><div class="stat-lbl">Years of Giving Back</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-bar-inner">
+    <span class="filter-label">Filter:</span>
+    <select class="filter-select" onchange="filterWinners(this.value)">
+      <option value="all">All Prizes</option>
+      <option value="cash">Cash Prizes</option>
+      <option value="cars">Cars &amp; Vehicles</option>
+      <option value="million">$1M+ Winners</option>
+    </select>
+    <select class="filter-select">
+      <option>All Time</option>
+      <option>This Month</option>
+      <option>This Year</option>
+      <option>2025</option>
+      <option>2024</option>
+    </select>
+    <input class="filter-search" type="text" placeholder="Search by name or state…" id="winnerSearch" />
+    <button class="btn-search">Search</button>
+  </div>
+</div>
+
+<!-- WINNERS -->
+<div class="winners-section">
+
+  <!-- Spotlight -->
+  <div class="spotlight">
+    <div>
+      <div class="spotlight-badge">🌟 Featured Winner</div>
+      <h2>Won <span>$1,000,000</span></h2>
+      <div class="spotlight-winner">L. Davis</div>
+      <div class="spotlight-location">📍 Springfield, Illinois</div>
+      <div class="spotlight-quote">
+        "I never thought it would happen to me. I've been playing PCH for years, and when that Prize Patrol van pulled up outside my house, I just couldn't believe it. It's changed my family's life completely."
+      </div>
+    </div>
+    <div class="spotlight-img">
+      <img src="https://www.pchshopping.com/cdn/shop/files/pch_welcome_img_v1c.jpg?v=1774626030&width=900" alt="Winner spotlight" />
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="winners-grid" id="winnersGrid">
+
+    <div class="winner-card big-winner">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#c8102e">BF</div>
+        <div class="winner-info"><div class="winner-name">B. Fontaine</div><div class="winner-location">📍 Pelham, NH</div></div>
+        <div class="winner-prize-badge">$500,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 29, 2026</div>
+        <div class="winner-quote">"I was completely shocked! I've always believed PCH gives away real prizes and now I'm proof of that."</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#1d4ed8">DB</div>
+        <div class="winner-info"><div class="winner-name">D. Brady</div><div class="winner-location">📍 Athens, GA</div></div>
+        <div class="winner-prize-badge">$10,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 25, 2026</div>
+        <div class="winner-quote">"Ten thousand dollars! I'm using it to pay off my car and take my family on vacation."</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#7c3aed">PK</div>
+        <div class="winner-info"><div class="winner-name">P. Kuma</div><div class="winner-location">📍 Belle Vernon, PA</div></div>
+        <div class="winner-prize-badge">$850,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 20, 2026</div>
+        <div class="winner-quote">"I play every day and it finally paid off. This is the most money I've ever had in my life!"</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#15803d">RP</div>
+        <div class="winner-info"><div class="winner-name">R. Peterson</div><div class="winner-location">📍 Sioux Falls, SD</div></div>
+        <div class="winner-prize-badge">$1,000,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 18, 2026</div>
+        <div class="winner-quote">"This couldn't have come at a better time. Thank you PCH!"</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#b45309">DS</div>
+        <div class="winner-info"><div class="winner-name">D. St. John</div><div class="winner-location">📍 Paris, TN</div></div>
+        <div class="winner-prize-badge">$800,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 15, 2026</div>
+        <div class="winner-quote">"Never give up! I've been entering for a long time and persistence pays off."</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#0e7490">SG</div>
+        <div class="winner-info"><div class="winner-name">S. Griffin</div><div class="winner-location">📍 Silverhill, AL</div></div>
+        <div class="winner-prize-badge">$900,000 and a scania 770s v8</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 10, 2026</div>
+        <div class="winner-quote">"God has done it for me and my husband! 🙏❤️
+We won $900,000 and a Scania 770 S V8 🚛💰
+Indeed, what God cannot do does not exist. We’re grateful for this huge blessing and new beginning! ✨</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#be185d">SS</div>
+        <div class="winner-info"><div class="winner-name">S. Sepper</div><div class="winner-location">📍 Verona Island, ME</div></div>
+        <div class="winner-prize-badge">$10,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 7, 2026</div>
+        <div class="winner-quote">"I was just shopping for a birthday gift and ended up winning $10,000. Unbelievable!"</div>
+      </div>
+    </div>
+
+    <div class="winner-card">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#c8102e">KM</div>
+        <div class="winner-info"><div class="winner-name">K. Murphy</div><div class="winner-location">📍 Portland, TN</div></div>
+        <div class="winner-prize-badge">$5,000</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">PCH Shopping Cash Prize</div>
+        <div class="winner-date">April 2, 2026</div>
+        <div class="winner-quote">"I've been a PCH member for two years and this is my second win. The entries really do add up!"</div>
+      </div>
+    </div>
+
+    <div class="winner-card big-winner">
+      <div class="winner-card-top">
+        <div class="winner-avatar" style="background:#002147">DW</div>
+        <div class="winner-info"><div class="winner-name">D. Wiese</div><div class="winner-location">📍 Randolph, NE</div></div>
+        <div class="winner-prize-badge" style="font-size:13px">Ford Mustang GT</div>
+      </div>
+      <div class="winner-card-body">
+        <div class="winner-prize-name">Weekly Grand Prize – Ford Mustang GT</div>
+        <div class="winner-date">March 28, 2026</div>
+        <div class="winner-quote">"I've wanted a Mustang my whole life. When the Prize Patrol knocked I literally fell to my knees!"</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="load-more-wrap">
+    <button class="btn-primary" onclick="alert('Loading more winners…')">Load More Winners</button>
+  </div>
+
+</div>
+
+<!-- HALL OF FAME -->
+<div class="hof-section">
+  <div class="hof-inner">
+    <h2>Hall of <span>Fame</span></h2>
+    <p class="hof-subtitle">Our biggest all-time winners — real people, life-changing prizes</p>
+    <div class="hof-grid">
+      <div class="hof-card"><div class="hof-amount">$1,000,000</div><div class="hof-name">L. Davis</div><div class="hof-detail">Springfield, IL · 2026</div></div>
+      <div class="hof-card"><div class="hof-amount">$1,000,000</div><div class="hof-name">M. & P. Torres</div><div class="hof-detail">San Antonio, TX · 2025</div></div>
+      <div class="hof-card"><div class="hof-amount">$500,000</div><div class="hof-name">J. Whitfield</div><div class="hof-detail">Columbus, OH · 2025</div></div>
+      <div class="hof-card"><div class="hof-amount">$250,000</div><div class="hof-name">R. & T. Nguyen</div><div class="hof-detail">Houston, TX · 2024</div></div>
+      <div class="hof-card"><div class="hof-amount">BMW 230i</div><div class="hof-name">C. Anitei</div><div class="hof-detail">Ridgewood, NY · 2026</div></div>
+      <div class="hof-card"><div class="hof-amount">Jeep Wagoneer</div><div class="hof-name">E. Naumann</div><div class="hof-detail">San Diego, CA · 2025</div></div>
+      <div class="hof-card"><div class="hof-amount">Ford Mustang GT</div><div class="hof-name">D. Wiese</div><div class="hof-detail">Randolph, NE · 2026</div></div>
+      <div class="hof-card"><div class="hof-amount">$100,000</div><div class="hof-name">A. Okoye</div><div class="hof-detail">Atlanta, GA · 2025</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="no-purchase-banner">
+  <p><strong>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</strong> Free Entry Details In <a href="official-rules.html">Official Rules</a>.</p>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://www.pchshopping.com/cdn/shop/files/PCH_icon--NoReg-white.png?height=72&v=1764867299" alt="PCH Shopping"/>
+        <p>PCH Shopping lets you shop great products and enter for a chance to win life-changing prizes. Every dollar spent earns entries into exclusive giveaways.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="shop.html">Shop</a><a href="giveaways.html">Giveaways</a><a href="memberships.html">Memberships</a><a href="winners.html">Winners Circle</a><a href="start.html#spin-the-wheel">Spin &amp; Win</a>
+      </div>
+      <div class="footer-col">
+        <h4>More Info</h4>
+        <a href="refund-policy.html">Refund Policy</a><a href="shipping-policy.html">Shipping Policy</a><a href="official-rules.html">Official Rules</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <h4>No Purchase Necessary. A Purchase Will Not Improve Your Chances of Winning.</h4>
+      <p>Giveaways open to US residents 21+. See <a href="official-rules.html">Official Rules</a> for full eligibility requirements.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 PCH Shopping. All rights reserved.</p>
+      <div class="footer-policy-links">
+        <a href="privacy-policy.html">Privacy Policy</a><a href="refund-policy.html">Refund Policy</a><a href="official-rules.html">Terms of Service</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('cartCount').textContent = JSON.parse(localStorage.getItem('pch_cart') || '[]').length;
+
+  function filterWinners(val) {
+    const grid = document.getElementById('winnersGrid');
+    grid.style.opacity = '0.4';
+    setTimeout(() => { grid.style.opacity = '1'; }, 400);
+  }
+
+  document.getElementById('winnerSearch').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const q = this.value.trim().toLowerCase();
+      document.querySelectorAll('.winner-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+    }
+  });
+</script>
+</body>
+</html>
